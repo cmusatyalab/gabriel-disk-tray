@@ -6,6 +6,7 @@ import cv2
 import fire
 import numpy as np
 from object_detection.utils import visualization_utils as vis_util
+from logzero import logger
 
 import tf_inference
 import util
@@ -26,12 +27,12 @@ def start_receiving(frozen_graph_path, label_file_path, num_classes, listening_p
     util.set_up_exit_handler(tfmodel.close)
     receiver = zmqimagestream.zmqImageReceiver(open_port=listening_port)
     while True:
-        _, img = receiver.imrecv(copy=True)
-        print("recv one image")
-        output_dict = tfmodel.run_inference_for_single_image(img)
+        _, encoded_img = receiver.imrecv()
+        img = cv2.imdecode(encoded_img, cv2.CV_LOAD_IMAGE_UNCHANGED)
+        logger.debug("recv one image")
+        with util.Timer('TF detection') as t:
+            output_dict = tfmodel.run_inference_for_single_image(img)
         # Visualization of the results of a detection.
-        img = np.copy(img)
-        print("finished detection")
         vis_util.visualize_boxes_and_labels_on_image_array(
             img,
             output_dict['detection_boxes'],

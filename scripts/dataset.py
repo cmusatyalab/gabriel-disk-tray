@@ -25,7 +25,6 @@ def get_dataset_stats(dataset_dir):
     stats = {}
     for split, split_file_pattern in splits.items():
         split_files = glob.glob(os.path.join(imageset_dir, split_file_pattern))
-        print(split_files)
         stats[split] = {}
         for data_file in split_files:
             with open(data_file) as f:

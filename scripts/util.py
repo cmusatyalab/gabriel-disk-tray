@@ -27,4 +27,4 @@ class Timer(contextlib2.ContextDecorator):
 
     def __exit__(self, *args):
         self._et = time.time()
-        logger.info('{} took {:.2f} ms'.format(self._name, (self._et - self._st) * 1000))
+        logger.info('{} took {:.2f} ms'.format(self._name,(self._et - self._st) * 1000))

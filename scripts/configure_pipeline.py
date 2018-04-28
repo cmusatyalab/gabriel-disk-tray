@@ -27,7 +27,7 @@ def configure_pipeline(num_classes, learning_rate, max_step,
     template = re.sub('num_classes: [0-9]*', 'num_classes: {}'.format(num_classes), template)
     template = re.sub('min_dimension: [0-9]*', 'min_dimension: {}'.format(min_dimension), template)
     template = re.sub('max_dimension: [0-9]*', 'max_dimension: {}'.format(max_dimension), template)
-    template = re.sub('batch_size: [0-9]*', 'batch_size: {}'.format(batch_size), template)
+    template = re.sub('(?<=\s)batch_size: [0-9]*', 'batch_size: {}'.format(batch_size), template)
     template = re.sub('initial_learning_rate: [0-9\.]*', 'initial_learning_rate: {:f}'.format(learning_rate),
                       template)
     template = re.sub('num_steps: [0-9]*', 'num_steps: {}'.format(max_step), template)

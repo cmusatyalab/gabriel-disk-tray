@@ -60,7 +60,7 @@ class zmqImageSender():
         self.zmq_socket = self.zmq_context.socket(zmq.REQ)
         self.zmq_socket.connect(connect_to)
 
-    def imsend(self, arrayname, array):
+    def imsend(self, arrayname, array, wait=True):
         '''send image to display on remote server'''
         if array.flags['C_CONTIGUOUS']:
             # if array is already contiguous in memory just send it
@@ -70,7 +70,8 @@ class zmqImageSender():
             array = np.ascontiguousarray(array)
             self.zmq_socket.send_array(array, arrayname, copy=False)
         # needed due to zmq REQ/REP paradigm
-        message = self.zmq_socket.recv()
+        if wait:
+            message = self.zmq_socket.recv()
 
 
 class zmqImageReceiver():

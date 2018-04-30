@@ -2,6 +2,7 @@ from __future__ import absolute_import
 from __future__ import division
 from __future__ import print_function
 
+import os
 import signal
 import sys
 import contextlib2
@@ -17,6 +18,12 @@ def set_up_exit_handler(cleanup_func):
     signal.signal(signal.SIGINT, exit_signal_handler)
 
 
+def create_directory_if_not_exists(directory):
+
+    if not os.path.exists(directory):
+        os.makedirs(directory)
+
+
 class Timer(contextlib2.ContextDecorator):
 
     def __init__(self, name):
@@ -27,4 +34,4 @@ class Timer(contextlib2.ContextDecorator):
 
     def __exit__(self, *args):
         self._et = time.time()
-        logger.info('{} took {:.2f} ms'.format(self._name,(self._et - self._st) * 1000))
+        logger.info('{} took {:.2f} ms'.format(self._name, (self._et - self._st) * 1000))

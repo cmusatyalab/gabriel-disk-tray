@@ -33,3 +33,8 @@ python object_detection/eval.py \
 ```bash
 tensorboard --logdir=$experiment_dir/models/model
 ```
+
+# Export Trained Model
+```bash
+python object_detection/export_inference_graph.py --input_type image_tensor --pipeline_config_path $experiment_dir/data/pipeline.config  --trained_checkpoint_prefix $experiment_dir/models/model/train/model.ckpt --output_directory $experiment_dir/exported
+```

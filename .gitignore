@@ -1,4 +1,9 @@
 experiment*
-faster*
 test_images
 scripts/.idea
+model/*
+base/*
+env
+trained_models
+*/*.pyc
+*.pyc

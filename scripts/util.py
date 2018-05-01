@@ -2,10 +2,10 @@ from __future__ import absolute_import
 from __future__ import division
 from __future__ import print_function
 
+import contextlib2
 import os
 import signal
 import sys
-import contextlib2
 import time
 from logzero import logger
 
@@ -19,7 +19,6 @@ def set_up_exit_handler(cleanup_func):
 
 
 def create_directory_if_not_exists(directory):
-
     if not os.path.exists(directory):
         os.makedirs(directory)
 

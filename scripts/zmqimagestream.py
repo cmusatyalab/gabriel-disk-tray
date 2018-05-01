@@ -12,8 +12,8 @@ AUTHOR:
     modified by junjuew
 '''
 
-import zmq
 import numpy as np
+import zmq
 
 
 class SerializingSocket(zmq.Socket):
@@ -77,6 +77,7 @@ class zmqImageSender():
 class zmqImageReceiver():
     '''A class that opens a zmq REP socket to receive images
     '''
+
     def __init__(self, open_port="tcp://*:5555"):
         '''initialize zmq socket on viewing computer that will display images'''
         self.zmq_context = SerializingContext()

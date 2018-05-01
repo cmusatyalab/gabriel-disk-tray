@@ -1,8 +1,7 @@
-import glob
-import os
-
 import fire
+import glob
 import numpy as np
+import os
 import tensorflow as tf
 from PIL import Image
 from logzero import logger

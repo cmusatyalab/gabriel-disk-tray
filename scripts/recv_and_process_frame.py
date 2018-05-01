@@ -23,7 +23,7 @@ def start_receiving(frozen_graph_path, label_file_path, num_classes, listening_p
             output_dict = tfmodel.run_inference_for_single_image(img)
         logger.debug("# of detected boxes: {}".format(output_dict['num_detections']))
         img = tf_inference.visualize_highest_prediction_per_class(img, output_dict, tfmodel.category_index,
-                                                                  min_score_thresh=0.5)
+                                                                  min_score_thresh=0.8)
         receiver.imack()
         cv2.imshow('test', img)
         cv2.waitKey(25)

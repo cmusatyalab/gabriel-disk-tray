@@ -134,7 +134,8 @@ def run_inference_on_test_dir(frozen_graph_path, label_file_path, num_classes, t
         logger.info('{} --> {}'.format(image_path, output_image_path))
 
 
-def visualize_highest_prediction_per_class(img, output_dict, category_index, min_score_thresh=0.5):
+def visualize_highest_prediction_per_class(img, output_dict, category_index, min_score_thresh=0.5,
+                                           num_predictions_per_class=10):
     # find the highest scored boxes
     detection_boxes = []
     detection_classes = []
@@ -143,12 +144,9 @@ def visualize_highest_prediction_per_class(img, output_dict, category_index, min
     # find the highest scored box by class
     for cls_idx in detected_classes:
         idx_in_detection_array = np.where(output_dict['detection_classes'] == cls_idx)[0]
-        idx_to_score = {idx: output_dict['detection_scores'][idx] for idx in idx_in_detection_array}
-        # sorted indices from highest scores to lowest
-        sorted_idx_by_score = zip(*sorted(idx_to_score.items(), key=lambda pair: (pair[1], pair[0]),
-                                          reverse=True))[0]
-        # choose top 1
-        top_idx_by_score = np.array(sorted_idx_by_score[:1])
+        # tensorflow output is already sorted by scores. choose top num_predictions_per_class
+        sorted_idx_by_score = idx_in_detection_array
+        top_idx_by_score = np.array(sorted_idx_by_score[:num_predictions_per_class])
         cls_detection_boxes = output_dict['detection_boxes'][top_idx_by_score]
         cls_detection_classes = output_dict['detection_classes'][top_idx_by_score]
         cls_detection_scores = output_dict['detection_scores'][top_idx_by_score]
@@ -163,6 +161,7 @@ def visualize_highest_prediction_per_class(img, output_dict, category_index, min
         np.array(detection_classes),
         np.array(detection_scores),
         category_index,
+        max_boxes_to_draw=len(detection_boxes),
         min_score_thresh=min_score_thresh,
         instance_masks=output_dict.get('detection_masks'),
         use_normalized_coordinates=True,

@@ -30,7 +30,7 @@ import cv2
 from disktray import config
 
 
-class Task:
+class Task(object):
     def __init__(self):
         self.current_state = "start"
 

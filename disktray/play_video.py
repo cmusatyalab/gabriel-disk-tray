@@ -31,6 +31,7 @@ class VideoHandler(gabriel.network.CommonHandler):
         ## receive data
         data_size = struct.unpack("!I", self._recv_all(4))[0]
         data = self._recv_all(data_size)
+        LOG.info('received {}'.format(data))
         webbrowser.open(data)
 
     def terminate(self):

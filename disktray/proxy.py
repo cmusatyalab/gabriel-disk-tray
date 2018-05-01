@@ -98,7 +98,7 @@ class DiskTrayApp(gabriel.proxy.CognitiveProcessThread):
 
         if config.PLAY_VIDEO:
             ## for playing sound
-            video_server_addr = ("128.2.209.136", 5699)
+            video_server_addr = config.DEMO_VIDEO_SERVER
             try:
                 self.video_sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
                 self.video_sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
@@ -110,7 +110,7 @@ class DiskTrayApp(gabriel.proxy.CognitiveProcessThread):
 
         if config.PLAY_SOUND:
             ## for playing sound
-            sound_server_addr = ("128.2.209.136", 4299)
+            sound_server_addr = config.DEMO_SOUND_SERVER
             try:
                 self.sound_sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
                 self.sound_sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)

@@ -1,7 +1,6 @@
 import json
 import multiprocessing
 import os
-import Queue
 import select
 import socket
 import struct
@@ -30,7 +29,7 @@ class SoundHandler(gabriel.network.CommonHandler):
         ## receive data
         data_size = struct.unpack("!I", self._recv_all(4))[0]
         data = self._recv_all(data_size)
-        print data
+        print(data)
         os.system('espeak "%s"' % data)
 
     def terminate(self):

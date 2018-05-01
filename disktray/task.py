@@ -23,11 +23,11 @@ from __future__ import absolute_import
 from __future__ import division
 from __future__ import print_function
 
+import os
+
 import cv2
 
 from disktray import config
-
-STATES = ["start", "nothing", "base", "pipe", "shade", "buckle", "blackcircle", "shadebase", "bulb", "bulbtop"]
 
 
 class Task:
@@ -58,12 +58,12 @@ class Task:
         return correct_placmenet
 
     @staticmethod
-    def _set_instruction(result, speech, image_path, video_path):
+    def _set_instruction(result, speech, image_name, video_name):
         result['speech'] = speech
-        image_path = image_path
+        image_path = os.path.join(config.IMAGE_PATH_PREFIX, image_name)
         result['image'] = cv2.imread(image_path) if image_path else None
         if config.VIDEO_GUIDANCE:
-            result['video'] = config.VIDEO_URL_PREFIX + video_path
+            result['video'] = config.VIDEO_URL_PREFIX + video_name
 
     def get_instruction(self, objects):
         """
@@ -75,9 +75,7 @@ class Task:
 
         # the start
         if self.current_state == "start":
-            result['speech'] = "Put the tray on the table."
-            image_path = "images_feedback/tray.jpg"
-            result['image'] = cv2.imread(image_path) if image_path else None
+            self._set_instruction(result, "Put the tray on the table.", "tray.jpg", "tray.mp4")
             self.current_state = "nothing"
             return result
 
@@ -91,51 +89,51 @@ class Task:
 
         if self.current_state == "nothing":
             if object_counts['tray'] == 1:
-                self._set_instruction(result, "Good job. Now show me the lever", "images_feedback/lever.jpg",
+                self._set_instruction(result, "Good job. Now show me the lever", "lever.jpg",
                                       "lever.mp4")
                 self.current_state = "lever"
         elif self.current_state == "lever":
             if object_counts['lever'] == 1:
                 self._set_instruction(result, "Good job. Now assemble the lever onto tray. Show me the vertical view.",
-                                      "images_feedback/dangling.jpg",
-                                      "dangling.mp4"
-                                      )
+                                      "dangling.jpg",
+                                      "dangling.mp4")
                 self.current_state = "dangling"
         elif self.current_state == "dangling":
             if object_counts['tray'] == 1 and (object_counts['lever'] == 1 or object_counts['leverside'] == 1):
                 if self._check_dangling(objects):
                     self._set_instruction(result, "Find the cap and show me the side view with pin holding up",
-                                          "images_feedback/cap.jpg",
+                                          "cap.jpg",
                                           "cap.mp4"
                                           )
                     self.current_state = "cap"
                 else:
                     self._set_instruction(result, "The lever is misplaced. Please make sure it is secure.",
-                                          "images_feedback/dangling.jpg", "dangling.mp4")
+                                          "dangling.jpg", "dangling.mp4")
         elif self.current_state == "cap":
             if object_counts['arc'] == 1 and object_counts['pin'] == 1:
                 self._set_instruction(result, "Excellent. Now assemble the cap onto the tray. Start from left to "
-                                             "right. Show "
-                                      "me a vertical view when done", "images_feedback/assembled.jpg", "assembled.mp4")
+                                              "right. Show "
+                                              "me a vertical view when done", "assembled.jpg",
+                                      "assembled.mp4")
                 self.current_state = "assembled"
         elif self.current_state == "assembled":
             if object_counts['assembled'] == 1:
                 self._set_instruction(result, "Awesome. Show me a close-up view to see if the pin is at right place.",
-                                      "images_feedback/pin.jpg",
+                                      "pin.jpg",
                                       "pin.mp4"
                                       )
                 self.current_state = "pin"
         elif self.current_state == "pin":
-            if object_counts['slotpin'] == 1:
+            if object_counts['pin'] == 1:
+                self._set_instruction(result, "Please place the pin into the slot.", "pin.jpg",
+                                      "pin.mp4")
+            elif object_counts['slotpin'] == 1:
                 self._set_instruction(result, "Fabulous. Now close the lever.",
-                                      "images_feedback/clamped.jpg", "clamped.mp4")
+                                      "clamped.jpg", "clamped.mp4")
                 self.current_state = "clamped"
-            elif object_counts['pin'] == 1:
-                self._set_instruction(result, "Please place the pin into the slot.", "images_feedback/pin.jpg",
-                                      "correctpin.mp4")
         elif self.current_state == "clamped":
             if object_counts['clamped'] == 1:
-                self._set_instruction(result, "Finished! Congraduations!", "images_feedback/finshed.jpg",
+                self._set_instruction(result, "Finished! Congraduations!", "finshed.jpg",
                                       "finished.mp4")
 
         if not config.VIDEO_GUIDANCE:

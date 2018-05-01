@@ -34,6 +34,16 @@ RECOGNIZE_ONLY = False
 TASK_SERVER_IP = "128.2.211.75"
 TASK_SERVER_PORT = 2722
 
+# DEMO Related Setup
+# Play video
+PLAY_VIDEO = True
+# Port for video server
+DEMO_VIDEO_SERVER = ("128.2.213.185", 5699)
+# Play sound
+PLAY_SOUND = True
+# Port for sound server
+DEMO_SOUND_SERVER = ("128.2.213.185", 4299)
+
 TF_TASK_SERVER_URL = "tcp://localhost:5555"
 TF_TASK_BIND_URL = "tcp://*:5555"
 
@@ -43,15 +53,11 @@ USE_GPU = True
 # Whether or not to save the displayed image in a temporary directory
 SAVE_IMAGE = False
 
-# Play video
-PLAY_VIDEO = False
-
-# Play sound
-PLAY_SOUND = False
 
 # Whether to use video or image feedback
-VIDEO_GUIDANCE = False
-VIDEO_URL_PREFIX = "http://typhoon.elijah.cs.cmu.edu/ikea/"
+IMAGE_PATH_PREFIX = "feedback/images"
+VIDEO_GUIDANCE = True
+VIDEO_URL_PREFIX = "http://sandstorm.elijah.cs.cmu.edu:8000/"
 
 # Max image width and height
 IMAGE_MAX_WH = 640
@@ -62,7 +68,6 @@ DISPLAY_SCALE = 1
 DISPLAY_LIST_ALL = ['input', 'object']
 DISPLAY_LIST_TEST = ['input', 'object']
 DISPLAY_LIST_STREAM = []
-# DISPLAY_LIST_TASK = ['text_guidance']
 DISPLAY_LIST_TASK = ['input', 'object', 'text_guidance']
 
 # Used for cvWaitKey

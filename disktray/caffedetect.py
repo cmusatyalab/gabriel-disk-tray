@@ -24,6 +24,7 @@ from __future__ import division
 from __future__ import print_function
 
 import matplotlib
+
 matplotlib.use('Agg')
 
 import json
@@ -37,13 +38,16 @@ faster_rcnn_root = os.getenv('FASTER_RCNN_ROOT')
 sys.path.append(os.path.join(faster_rcnn_root, "tools"))
 # needed to intialize paths required by faster-rcnn
 import _init_paths
+# use _init_paths, just to make sure pycharm doesn't remove the _init_paths imports
+# when reformatting code
+with open(os.devnull, 'w') as f:
+    f.write('py-faster-rcnn is initilialized. {}'.format(_init_paths.caffe_path))
 from fast_rcnn.config import cfg as faster_rcnn_config
 from fast_rcnn.test import im_detect
 from fast_rcnn.nms_wrapper import nms
 
 sys.path.append(os.path.join(faster_rcnn_root, "python"))
 import caffe
-
 from disktray import config
 from disktray import zhuocv as zc
 
@@ -74,15 +78,12 @@ for i in range(2):
 
 
 # img will be modified in this function
-def detect_object(img, resize_ratio=1):
+def detect_object(img, resize_ratio=1, confidence_threshold=0.5, nms_threshold=0.3):
     global net
     if config.USE_GPU:
         caffe.set_mode_gpu()
     else:
         caffe.set_mode_cpu()
-
-    CONF_THRESH = 0.5
-    NMS_THRESH = 0.3
 
     scores, boxes = im_detect(net, img)
 
@@ -96,11 +97,11 @@ def detect_object(img, resize_ratio=1):
         dets = np.hstack((cls_boxes, cls_scores[:, np.newaxis])).astype(np.float32)
 
         # non maximum suppression
-        keep = nms(dets, NMS_THRESH)
+        keep = nms(dets, nms_threshold)
         dets = dets[keep, :]
 
         # filter out low confidence scores
-        inds = np.where(dets[:, -1] >= CONF_THRESH)[0]
+        inds = np.where(dets[:, -1] >= confidence_threshold)[0]
         dets = dets[inds, :]
 
         # now change dets format to [x1, y1, x2, y2, confidence, cls_idx]
@@ -118,8 +119,9 @@ def detect_object(img, resize_ratio=1):
     return (img, result)
 
 
-def process(img, resize_ratio=1, display_list=[]):
-    img_object, result = detect_object(img, resize_ratio)
+def process(img, confidence_threshold, nms_threshold, resize_ratio=1, display_list=[]):
+    img_object, result = detect_object(img, resize_ratio, confidence_threshold=confidence_threshold,
+                                       nms_threshold=nms_threshold)
     zc.check_and_display('object', img_object, display_list, wait_time=config.DISPLAY_WAIT_TIME,
                          resize_max=config.DISPLAY_MAX_PIXEL)
 

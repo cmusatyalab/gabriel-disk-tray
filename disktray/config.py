@@ -53,6 +53,9 @@ USE_GPU = True
 # Whether or not to save the displayed image in a temporary directory
 SAVE_IMAGE = False
 
+# Threshold for computer vision module
+CONFIDENCE_THRESHOLD = 0.7
+NMS_THRESHOLD = 0.3
 
 # Whether to use video or image feedback
 IMAGE_PATH_PREFIX = "feedback/images"

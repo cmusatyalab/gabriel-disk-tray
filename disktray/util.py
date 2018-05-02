@@ -27,19 +27,19 @@ def create_directory_if_not_exists(directory):
         os.makedirs(directory)
 
 
-def get_sorted_objects_by_categories(self, objects, categories):
-    cats_objs = []
-    for cat in categories:
-        cat_objs = self.get_objects_by_category(objects, cat)
-        cats_objs.append(cat_objs)
-    return np.vstack(cats_objs)
-
-
 def get_sorted_objects_by_category(objects, category, object_list=config.LABELS):
     cat_objs = objects[np.where(objects[:, -1] == object_list.index(category))]
     # sort by confidence
     cat_objs[np.argsort(cat_objs[:, -2])[::-1]]
     return cat_objs
+
+
+def get_sorted_objects_by_categories(objects, categories, object_list=config.LABELS):
+    cats_objs = []
+    for cat in categories:
+        cat_objs = get_sorted_objects_by_category(objects, cat, object_list=object_list)
+        cats_objs.append(cat_objs)
+    return np.vstack(cats_objs)
 
 
 class Timer(contextlib2.ContextDecorator):

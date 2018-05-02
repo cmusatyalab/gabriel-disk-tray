@@ -116,7 +116,9 @@ class IkeaProcessing(threading.Thread):
         #                      wait_time=config.DISPLAY_WAIT_TIME)
 
         ## get current state
-        rtn_msg, state = caffedetect.process(img, resize_ratio, display_list)
+        rtn_msg, state = caffedetect.process(img, confidence_threshold=config.CONFIDENCE_THRESHOLD,
+                                             nms_threshold=config.NMS_THRESHOLD, resize_ratio=resize_ratio,
+                                             display_list=display_list)
         if state is None:
             return "None"
 

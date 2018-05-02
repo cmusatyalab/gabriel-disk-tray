@@ -60,7 +60,7 @@ class Task(object):
 
         tray_width = tray[2] - tray[0]
 
-        lever_left_the_tray_center = lever[2] < (tray[0] + 0.5 * tray_width)
+        lever_left_the_tray_center = lever[2] < (tray[0] + 0.6 * tray_width)
         logger.debug("tray is at: {}".format(tray))
         logger.debug("lever is at: {}".format(lever))
         logger.debug("lever_left_the_tray_center? {}".format(lever_left_the_tray_center))
@@ -143,14 +143,23 @@ class Task(object):
                 if current_object_counts['lever'] == 1 or current_object_counts['leverside'] == 1:
                     if self._check_lever_at_bottom_left_of_tray(objects):
                         if self._check_dangling(objects):
-                            self._set_instruction(result, "Find the cap and show me the side view with pin holding up",
-                                                  "cap.jpg",
-                                                  "cap.mp4"
-                                                  )
-                            self.current_state = "cap"
+                            self._set_instruction(result,
+                                                  "Insert the guide to the side of the tray. Place the tray on the "
+                                                  "table vertically when done.",
+                                                  "guide.jpg",
+                                                  "guide.mp4")
+                            self.current_state = "guide"
                         else:
                             self._set_instruction(result, "The lever is misplaced. Please make sure it is secure.",
                                                   "dangling.jpg", "dangling.mp4")
+        elif self.current_state == "guide":
+            if self._cumulative_object_counters['tray'] == 5:
+                if self._check_tray_vertical(objects):
+                    self._set_instruction(result,
+                                          "Find the cap and show me the side view with pin holding up",
+                                          "cap.jpg",
+                                          "cap.mp4")
+                    self.current_state = "cap"
         elif self.current_state == "cap":
             if current_object_counts['arc'] == 1 and current_object_counts['pin'] == 1:
                 self._set_instruction(result, "Excellent. Now assemble the cap onto the tray. Start from left to "

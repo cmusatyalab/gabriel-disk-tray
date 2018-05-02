@@ -38,35 +38,33 @@ class Task(object):
         # how many consecutive frames an object has appeared
         self._cumulative_object_counters = collections.defaultdict(int)
 
-    def _check_dangling(self, objects):
-        trays = []
-        levers = []
-        for i in xrange(objects.shape[0]):
-            if int(objects[i, -1] + 0.1) == config.LABELS.index('tray'):
-                trays.append(objects[i, :])
-            if (int(objects[i, -1] + 0.1) == config.LABELS.index('lever')) or (int(objects[i, -1] + 0.1) ==
-                                                                               config.LABELS.index('leverside')):
-                levers.append(objects[i, :])
-
-        assert len(trays) == 1
-        assert len(levers) == 1
-        tray = trays[0]
-        lever = levers[0]
-
+    def _check_lever_at_bottom_left_of_tray(self, objects):
+        tray = util.get_sorted_objects_by_category(objects, 'tray')[0]
+        lever = util.get_sorted_objects_by_categories(objects, ['lever', 'leverside'])[0]
         tray_width = tray[2] - tray[0]
         tray_height = tray[3] - tray[1]
 
-        # the lever needs to roughly below the tray
+        # the lever needs to roughly at the bottom left edge of the tray
         lever_right_the_left_edge = (tray[0] - 0.1 * tray_width) < lever[0] < (tray[0] + 0.2 * tray_width)
         lever_below_the_bottom_edge = (tray[3] - 0.1 * tray_height) < lever[1] < (
                 tray[3] + 0.1 * tray_height)
-        lever_left_the_tray_center = lever[2] < (tray[0] + 0.4 * tray_width)
         logger.debug("tray is at: {}".format(tray))
         logger.debug("lever is at: {}".format(lever))
         logger.debug("lever_right_the_left_edge? {}".format(lever_right_the_left_edge))
         logger.debug("lever_below_the_bottom_edge? {}".format(lever_below_the_bottom_edge))
+        return lever_right_the_left_edge and lever_below_the_bottom_edge
+
+    def _check_dangling(self, objects):
+        tray = util.get_sorted_objects_by_category(objects, 'tray')[0]
+        lever = util.get_sorted_objects_by_categories(objects, ['lever', 'leverside'])[0]
+
+        tray_width = tray[2] - tray[0]
+
+        lever_left_the_tray_center = lever[2] < (tray[0] + 0.5 * tray_width)
+        logger.debug("tray is at: {}".format(tray))
+        logger.debug("lever is at: {}".format(lever))
         logger.debug("lever_left_the_tray_center? {}".format(lever_left_the_tray_center))
-        return lever_right_the_left_edge and lever_below_the_bottom_edge and lever_left_the_tray_center
+        return lever_left_the_tray_center
 
     def _check_tray_vertical(self, objects):
         """Check the tray is vertical. There must be at least one tray in objects.
@@ -143,15 +141,16 @@ class Task(object):
         elif self.current_state == "dangling":
             if current_object_counts['tray'] == 1 and self._check_tray_vertical(objects):
                 if current_object_counts['lever'] == 1 or current_object_counts['leverside'] == 1:
-                    if self._check_dangling(objects):
-                        self._set_instruction(result, "Find the cap and show me the side view with pin holding up",
-                                              "cap.jpg",
-                                              "cap.mp4"
-                                              )
-                        self.current_state = "cap"
-                    else:
-                        self._set_instruction(result, "The lever is misplaced. Please make sure it is secure.",
-                                              "dangling.jpg", "dangling.mp4")
+                    if self._check_lever_at_bottom_left_of_tray(objects):
+                        if self._check_dangling(objects):
+                            self._set_instruction(result, "Find the cap and show me the side view with pin holding up",
+                                                  "cap.jpg",
+                                                  "cap.mp4"
+                                                  )
+                            self.current_state = "cap"
+                        else:
+                            self._set_instruction(result, "The lever is misplaced. Please make sure it is secure.",
+                                                  "dangling.jpg", "dangling.mp4")
         elif self.current_state == "cap":
             if current_object_counts['arc'] == 1 and current_object_counts['pin'] == 1:
                 self._set_instruction(result, "Excellent. Now assemble the cap onto the tray. Start from left to "

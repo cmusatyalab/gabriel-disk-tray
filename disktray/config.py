@@ -60,7 +60,7 @@ NMS_THRESHOLD = 0.3
 # Whether to use video or image feedback
 IMAGE_PATH_PREFIX = "feedback/images"
 VIDEO_GUIDANCE = True
-VIDEO_URL_PREFIX = "http://sandstorm.elijah.cs.cmu.edu:8000/"
+VIDEO_URL_PREFIX = "http://sandstorm.elijah.cs.cmu.edu:8080/"
 
 # Max image width and height
 IMAGE_MAX_WH = 640

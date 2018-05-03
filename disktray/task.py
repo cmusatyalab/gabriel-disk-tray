@@ -66,6 +66,22 @@ class Task(object):
         logger.debug("lever_left_the_tray_center? {}".format(lever_left_the_tray_center))
         return lever_left_the_tray_center
 
+    def _check_tray_horizontal(self, objects):
+        """Check the tray is horizontal. There must be a tray in objects
+
+        :param objects:
+        :return:
+        """
+        tray = util.get_sorted_objects_by_category(objects, 'tray')[0]
+        tray_width = tray[2] - tray[0]
+        tray_height = tray[3] - tray[1]
+        tray_height_width_ratio = tray_height / float(tray_width)
+        is_horizontal = bool(tray_height_width_ratio < 0.8)
+        logger.debug("tray height: {}, tray width: {}, tray_height / tray_width: {}".format(tray_height, tray_width,
+                                                                                            tray_height_width_ratio))
+        logger.debug("tray is horizontal? {}".format(is_horizontal))
+        return is_horizontal
+
     def _check_tray_vertical(self, objects):
         """Check the tray is vertical. There must be at least one tray in objects.
 
@@ -145,7 +161,7 @@ class Task(object):
                         if self._check_dangling(objects):
                             self._set_instruction(result,
                                                   "Insert the guide to the side of the tray. Place the tray on the "
-                                                  "table vertically when done.",
+                                                  "table horizontally when done.",
                                                   "guide.jpg",
                                                   "guide.mp4")
                             self.current_state = "guide"
@@ -154,7 +170,7 @@ class Task(object):
                                                   "dangling.jpg", "dangling.mp4")
         elif self.current_state == "guide":
             if self._cumulative_object_counters['tray'] == 5:
-                if self._check_tray_vertical(objects):
+                if self._check_tray_horizontal(objects):
                     self._set_instruction(result,
                                           "Find the cap and show me the side view with pin holding up",
                                           "cap.jpg",

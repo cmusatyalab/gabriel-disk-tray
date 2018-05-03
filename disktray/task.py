@@ -150,7 +150,7 @@ class Task(object):
                 self.current_state = "lever"
         elif self.current_state == "lever":
             if self._cumulative_object_counters['lever'] == 3:
-                self._set_instruction(result, "Good job. Now assemble the lever onto tray. Show me the vertical view.",
+                self._set_instruction(result, "Good. Now assemble the lever onto tray. Show me the vertical view.",
                                       "dangling.jpg",
                                       "dangling.mp4")
                 self.current_state = "dangling"
@@ -160,8 +160,8 @@ class Task(object):
                     if self._check_lever_at_bottom_left_of_tray(objects):
                         if self._check_dangling(objects):
                             self._set_instruction(result,
-                                                  "Insert the guide to the side of the tray. Place the tray on the "
-                                                  "table horizontally when done.",
+                                                  "Great. Insert the guide to the side of the tray. Place the tray on "
+                                                  "the table horizontally when done.",
                                                   "guide.jpg",
                                                   "guide.mp4")
                             self.current_state = "guide"
@@ -172,7 +172,7 @@ class Task(object):
             if self._cumulative_object_counters['tray'] == 5:
                 if self._check_tray_horizontal(objects):
                     self._set_instruction(result,
-                                          "Find the cap and show me the side view with pin holding up",
+                                          "Okay. Find the cap and show me the side view with pin holding up",
                                           "cap.jpg",
                                           "cap.mp4")
                     self.current_state = "cap"

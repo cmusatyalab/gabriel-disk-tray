@@ -24,6 +24,8 @@ from __future__ import division
 from __future__ import print_function
 
 import Queue
+import collections
+import copy
 import json
 import multiprocessing
 import pprint
@@ -38,7 +40,7 @@ import gabriel
 import gabriel.proxy
 import numpy as np
 
-from disktray import config, util
+from disktray import config
 from disktray import task
 from disktray import zhuocv as zc
 
@@ -82,6 +84,10 @@ class DiskTrayApp(gabriel.proxy.CognitiveProcessThread):
         super(DiskTrayApp, self).__init__(image_queue, output_queue, engine_id)
         self.log_flag = log_flag
         self.is_first_image = True
+        self._previous_instruction = {}
+        self._previous_instruction_timestamp = time.time()
+        # minimum time interval between two duplicate instructions are given
+        self._min_time_interval_between_duplicate_instructions = 20
 
         # task initialization
         self.task = task.Task()
@@ -141,6 +147,28 @@ class DiskTrayApp(gabriel.proxy.CognitiveProcessThread):
             data += tmp_data
         return data
 
+    def _remove_duplicate_instructions(self, current_result):
+        """Remove duplicate instructions to avoid flooding an user with a huge amount of same instructions"""
+        # ignore the results that do not have any instructions
+        if 'speech' not in current_result and 'image' not in current_result and 'video' not in current_result:
+            return current_result
+
+        elapsed_time = time.time() - self._previous_instruction_timestamp
+        next_previous_result = copy.copy(current_result)
+        if elapsed_time < self._min_time_interval_between_duplicate_instructions:
+            if current_result == self._previous_instruction:
+                LOG.info('Duplicated instructions! Removing speech, image and video instructions from {}'.format(
+                    current_result))
+                current_result.pop('speech', None)
+                current_result.pop('image', None)
+                current_result.pop('video', None)
+            else:
+                self._previous_instruction_timestamp = time.time()
+        else:
+            self._previous_instruction_timestamp = time.time()
+        self._previous_instruction = next_previous_result
+        return current_result
+
     def handle(self, header, data):
         # receive data from control VM
         LOG.info("received new image")
@@ -170,14 +198,19 @@ class DiskTrayApp(gabriel.proxy.CognitiveProcessThread):
                                  wait_time=config.DISPLAY_WAIT_TIME)
         LOG.info("object detection result: %s" % objects)
 
-        ## for measurement, when the sysmbolic representation has been got
+        # for measurement, when the sysmbolic representation has been got
         if gabriel.Debug.TIME_MEASUREMENT:
             header[gabriel.Protocol_measurement.JSON_KEY_APP_SYMBOLIC_TIME] = time.time()
 
-        ## get instruction based on state
+        # get instruction based on state
         instruction = self.task.get_instruction(objects)
         if instruction['status'] != 'success':
             return json.dumps(result)
+
+        # suppress duplicate instructions
+        self._remove_duplicate_instructions(instruction)
+
+        # send instructions back to client or the demo servers
         header['status'] = 'success'
         if instruction.get('speech', None) is not None:
             result['speech'] = instruction['speech']
@@ -195,11 +228,6 @@ class DiskTrayApp(gabriel.proxy.CognitiveProcessThread):
                 data = result['video']
                 packet = struct.pack("!I%ds" % len(data), len(data), data)
                 self.video_sock.sendall(packet)
-        # if instruction.get('holo_object', None) is not None:
-        #     result['holo_object'] = instruction['holo_object']
-        # if instruction.get('holo_location', None) is not None:
-        #     result['holo_location'] = instruction['holo_location']
-
         return json.dumps(result)
 
 

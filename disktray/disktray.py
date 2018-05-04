@@ -244,6 +244,12 @@ if __name__ == "__main__":
     ucomm_ip = service_list.get(gabriel.ServiceMeta.UCOMM_SERVER_IP)
     ucomm_port = service_list.get(gabriel.ServiceMeta.UCOMM_SERVER_PORT)
 
+    # object detection
+    object_detection_process = gabriel.proxy.AppLauncher(config.OBJECT_DETECTION_BINARY_PATH, is_print = True)
+    object_detection_process.start()
+    object_detection_process.isDaemon = True
+    time.sleep(15)
+
     # image receiving thread
     image_queue = Queue.Queue(gabriel.Const.APP_LEVEL_TOKEN_SIZE)
     LOG.info("TOKEN SIZE OF OFFLOADING ENGINE: %d" % gabriel.Const.APP_LEVEL_TOKEN_SIZE)
@@ -277,4 +283,6 @@ if __name__ == "__main__":
             video_streaming.terminate()
         if app_proxy is not None:
             app_proxy.terminate()
+        if object_detection_process is not None:
+            object_detection_process.terminate()
         result_pub.terminate()

@@ -25,12 +25,15 @@ from __future__ import print_function
 
 # If True, configurations are set to process video stream in real-time (use with proxy.py)
 # If False, configurations are set to process one independent image (use with debug.py)
+import os
+
 IS_STREAMING = True
 
 # Pure state detection or generate feedback as well
 RECOGNIZE_ONLY = False
 
 # Port for communication between proxy and task server
+OBJECT_DETECTION_BINARY_PATH = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'objectserver.py')
 TASK_SERVER_IP = "128.2.211.75"
 TASK_SERVER_PORT = 2722
 

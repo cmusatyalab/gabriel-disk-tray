@@ -24,7 +24,6 @@ from __future__ import division
 from __future__ import print_function
 
 import Queue
-import collections
 import copy
 import json
 import multiprocessing

@@ -2,7 +2,7 @@ experiment*
 test_images
 scripts/.idea
 model/*
-base/*
+base/faster_rcnn*
 env
 trained_models
 */*.pyc

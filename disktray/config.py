@@ -12,7 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 # ==============================================================================
-
+"""Application wide configuration file."""
 from __future__ import absolute_import
 from __future__ import division
 from __future__ import print_function
@@ -33,16 +33,13 @@ TASK_SERVER_PORT = 2722
 
 # DEMO Related Setup
 # Play video
-PLAY_VIDEO = True
+PLAY_VIDEO = False
 # Port for video server
 DEMO_VIDEO_SERVER = ("128.2.213.185", 5699)
 # Play sound
-PLAY_SOUND = True
+PLAY_SOUND = False
 # Port for sound server
 DEMO_SOUND_SERVER = ("128.2.213.185", 4299)
-
-TF_TASK_SERVER_URL = "tcp://localhost:5555"
-TF_TASK_BIND_URL = "tcp://*:5555"
 
 # Configs for object detection
 USE_GPU = True
@@ -77,13 +74,6 @@ DISPLAY_WAIT_TIME = 1 if IS_STREAMING else 500
 with open('model/labels.txt', 'r') as f:
     content = f.read().splitlines()
     LABELS = content
-
-# The parameters for locating the hologram feedback
-holo_pos_paras = {'pipe': [17500, 0.5, 0.45],
-                  'lettuce': [6500, 0.5, 0.32],
-                  'bread': [7000, 0.5, 0.3],
-                  'tomato': [7500, 0.5, 0.26],
-                  'breadtop': [7800, 0.5, 0.22]}
 
 
 def setup(is_streaming):

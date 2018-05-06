@@ -1,3 +1,4 @@
+#!/usr/bin/env python2
 # Copyright (C) 2018 Carnegie Mellon University. All Rights Reserved.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,7 +13,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 # ==============================================================================
-
+"""DiskTray Cognitive Assistance Application."""
 from __future__ import absolute_import
 from __future__ import division
 from __future__ import print_function
@@ -238,7 +239,7 @@ if __name__ == "__main__":
     ucomm_port = service_list.get(gabriel.ServiceMeta.UCOMM_SERVER_PORT)
 
     # object detection
-    object_detection_process = gabriel.proxy.AppLauncher(config.OBJECT_DETECTION_BINARY_PATH, is_print = True)
+    object_detection_process = gabriel.proxy.AppLauncher(config.OBJECT_DETECTION_BINARY_PATH, is_print=True)
     object_detection_process.start()
     object_detection_process.isDaemon = True
     time.sleep(15)

@@ -12,7 +12,10 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 # ==============================================================================
+"""DiskTray Application Task State Machine.
 
+This file contains the task workflow, computer vision checks, and instructions for the DiskTray assistance.
+"""
 from __future__ import absolute_import
 from __future__ import division
 from __future__ import print_function

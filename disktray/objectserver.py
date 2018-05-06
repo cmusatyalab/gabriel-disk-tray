@@ -1,3 +1,4 @@
+#!/usr/bin/env python2
 # Copyright (C) 2018 Carnegie Mellon University. All Rights Reserved.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,7 +13,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 # ==============================================================================
-
+"""Object Detection Server."""
 from __future__ import absolute_import
 from __future__ import division
 from __future__ import print_function
@@ -28,7 +29,6 @@ import traceback
 import cv2
 import gabriel
 
-# ikea related
 from disktray import caffedetect
 from disktray import config
 from disktray import zhuocv as zc
@@ -101,15 +101,12 @@ class IkeaProcessing(threading.Thread):
         sock.sendall(packet)
 
     def _handle_img(self, img):
-        ## preprocessing of input image
+        # preprocessing of input image
         resize_ratio = 1
         if max(img.shape) > config.IMAGE_MAX_WH:
             resize_ratio = float(config.IMAGE_MAX_WH) / max(img.shape[0], img.shape[1])
             img = cv2.resize(img, (0, 0), fx=resize_ratio, fy=resize_ratio, interpolation=cv2.INTER_AREA)
-        # zc.check_and_display('input', img, display_list, resize_max=config.DISPLAY_MAX_PIXEL,
-        #                      wait_time=config.DISPLAY_WAIT_TIME)
-
-        ## get current state
+        # get current state
         rtn_msg, state = caffedetect.process(img, confidence_threshold=config.CONFIDENCE_THRESHOLD,
                                              nms_threshold=config.NMS_THRESHOLD, resize_ratio=resize_ratio,
                                              display_list=display_list)

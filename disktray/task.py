@@ -198,7 +198,7 @@ class Task(object):
         elif self.current_state == "clamped":
             clamped_objects = util.get_sorted_objects_by_category(objects, 'clamped')
             if len(clamped_objects) > 0 and clamped_objects[0][-2] > 0.9:
-                self._set_instruction(result, "Finished! Congraduations!", "finshed.jpg",
+                self._set_instruction(result, "Finished! Congratulations!", "finshed.jpg",
                                       "finished.mp4")
                 self.current_state = "finished"
 

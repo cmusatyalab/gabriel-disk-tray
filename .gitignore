@@ -1,9 +1,10 @@
 experiment*
 test_images
-scripts/.idea
+*/.idea
 model/*
 base/*
 env
 trained_models
 */*.pyc
 *.pyc
+.idea

@@ -8,3 +8,4 @@ trained_models
 */*.pyc
 *.pyc
 .idea
+.envrc

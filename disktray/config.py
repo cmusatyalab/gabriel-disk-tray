@@ -28,7 +28,7 @@ RECOGNIZE_ONLY = False
 
 # Port for communication between proxy and task server
 OBJECT_DETECTION_BINARY_PATH = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'objectserver.py')
-TASK_SERVER_IP = "128.2.211.75"
+TASK_SERVER_IP = "127.0.0.1"
 TASK_SERVER_PORT = 2722
 
 # DEMO Related Setup
@@ -54,7 +54,9 @@ NMS_THRESHOLD = 0.3
 # Whether to use video or image feedback
 IMAGE_PATH_PREFIX = "feedback/images"
 VIDEO_GUIDANCE = True
-VIDEO_URL_PREFIX = "http://sandstorm.elijah.cs.cmu.edu:8080/"
+VIDEO_SERVER_URL = os.getenv('DISKTRAY_VIDEO_SERVER_URL')
+if VIDEO_GUIDANCE and (VIDEO_SERVER_URL is None or len(VIDEO_SERVER_URL) == 0):
+    raise ValueError('DISKTRAY_VIDEO_SERVER_URL environment variable not specified or not valid!')
 
 # Max image width and height
 IMAGE_MAX_WH = 640
@@ -71,9 +73,9 @@ DISPLAY_LIST_TASK = ['object']
 DISPLAY_WAIT_TIME = 1 if IS_STREAMING else 500
 
 # py-faster-rcnn based Object Detection Server
-FASTER_RCNN_ROOT = os.getenv('FASTER_RCNN_ROOT')
+FASTER_RCNN_ROOT = os.getenv('DISKTRAY_FASTER_RCNN_ROOT')
 if FASTER_RCNN_ROOT is None:
-    raise ValueError('FASTER_RCNN_ROOT environment variable is not set. Please set it to be the path of '
+    raise ValueError('DISKTRAY_FASTER_RCNN_ROOT environment variable is not set. Please set it to be the path of '
                      'py-faster-rcnn package.')
 MODEL_DIR = 'model'
 if not os.path.exists(MODEL_DIR):

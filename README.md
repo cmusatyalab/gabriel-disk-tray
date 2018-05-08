@@ -2,6 +2,9 @@
 Cognitive Assistance for assembling a disk tray.
 
 # Run
+  1. Set following environment variables
+      1. DISKTRAY_FASTER_RCNN_ROOT
+      2. DISKTRAY_VIDEO_SERVER_URL
   1. Start the Gabriel Control and Ucomm server
   ```bash
   docker run --rm --name gabriel -p 0.0.0.0:9098:9098 \

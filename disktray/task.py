@@ -106,7 +106,7 @@ class Task(object):
         image_path = os.path.join(config.IMAGE_PATH_PREFIX, image_name)
         result['image'] = cv2.imread(image_path) if image_path else None
         if config.VIDEO_GUIDANCE:
-            result['video'] = config.VIDEO_URL_PREFIX + video_name
+            result['video'] = config.VIDEO_SERVER_URL + '/' + video_name
 
     def get_instruction(self, objects):
         """

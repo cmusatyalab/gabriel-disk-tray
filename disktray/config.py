@@ -62,10 +62,10 @@ IMAGE_MAX_WH = 640
 # Display
 DISPLAY_MAX_PIXEL = 400
 DISPLAY_SCALE = 1
-DISPLAY_LIST_ALL = ['input', 'object']
-DISPLAY_LIST_TEST = ['input', 'object']
+DISPLAY_LIST_ALL = []
+DISPLAY_LIST_TEST = []
 DISPLAY_LIST_STREAM = []
-DISPLAY_LIST_TASK = ['input', 'object', 'text_guidance']
+DISPLAY_LIST_TASK = ['object']
 
 # Used for cvWaitKey
 DISPLAY_WAIT_TIME = 1 if IS_STREAMING else 500

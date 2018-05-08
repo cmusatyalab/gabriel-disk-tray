@@ -114,8 +114,5 @@ def detect_object(img, resize_ratio=1, confidence_threshold=0.5, nms_threshold=0
 def process(img, confidence_threshold, nms_threshold, resize_ratio=1, display_list=[]):
     img_object, result = detect_object(img, resize_ratio, confidence_threshold=confidence_threshold,
                                        nms_threshold=nms_threshold)
-    zc.check_and_display('object', img_object, display_list, wait_time=config.DISPLAY_WAIT_TIME,
-                         resize_max=config.DISPLAY_MAX_PIXEL)
-
     rtn_msg = {'status': 'success'}
     return (rtn_msg, json.dumps(result.tolist()))

@@ -93,13 +93,13 @@ RUN python setup.py install
 # install DiskTray application
 #############################################
 WORKDIR /
+# install twistd to serve video files if they are not installed
+RUN pip install -U twisted
 RUN git clone https://github.com/junjuew/gabriel-disk-tray.git /gabriel-disk-tray
 WORKDIR /gabriel-disk-tray
 RUN pip install -r requirements.txt
 RUN python setup.py install
 RUN bash -e /gabriel-disk-tray/scripts/download_asset.sh
-# install twistd to serve video files if they are not installed
-RUN pip install -U twisted
 
 WORKDIR /
 ENV DISKTRAY_FASTER_RCNN_ROOT /py-faster-rcnn

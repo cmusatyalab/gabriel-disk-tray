@@ -5,7 +5,6 @@ constantly==15.1.0
 contextlib2==0.5.5
 cycler==0.10.0
 decorator==4.3.0
-disktray==1.0.0
 easydict==1.7
 elijah-gabriel==0.1.0
 hyperlink==18.0.0
@@ -25,7 +24,6 @@ PyWavelets==0.5.2
 PyYAML==3.12
 scikit-image==0.13.1
 scipy==1.0.1
-six==1.11.0
 subprocess32==3.2.7
 Twisted==18.4.0
 zope.interface==4.5.0

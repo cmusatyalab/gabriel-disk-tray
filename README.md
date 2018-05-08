@@ -2,11 +2,11 @@
 Cognitive Assistance for assembling a disk tray.
 
 # Installation
-Please see [Dockerfile](Dockerfile) for details.
+Running the application using Docker is advised. If you want to install from source, please see [Dockerfile](Dockerfile) for details.
 
 # How to Run
 ## Client
-Run Gabriel's [legacy Android Client](https://github.com/cmusatyalab/gabriel/tree/master/client/legacy-android-client). You need Android Studio to compile and install the apk.
+Run Gabriel's [legacy Android Client](https://github.com/cmusatyalab/gabriel/tree/master/client/legacy-android-client). You'll need Android Studio to compile and install the apk.
 Make sure to change IP address of GABRIEL_IP variable at src/edu/cmu/cs/gabriel/Const.java to point to your server.
 
 ## Server

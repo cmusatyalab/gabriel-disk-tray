@@ -70,7 +70,14 @@ DISPLAY_LIST_TASK = ['input', 'object', 'text_guidance']
 # Used for cvWaitKey
 DISPLAY_WAIT_TIME = 1 if IS_STREAMING else 500
 
-# The objects(states) which can be detected
+# py-faster-rcnn based Object Detection Server
+FASTER_RCNN_ROOT = os.getenv('FASTER_RCNN_ROOT')
+if FASTER_RCNN_ROOT is None:
+    raise ValueError('FASTER_RCNN_ROOT environment variable is not set. Please set it to be the path of '
+                     'py-faster-rcnn package.')
+MODEL_DIR = 'model'
+if not os.path.exists(MODEL_DIR):
+    raise ValueError('Model directory ({}) does not exist'.format(os.path.abspath(MODEL_DIR)))
 with open('model/labels.txt', 'r') as f:
     content = f.read().splitlines()
     LABELS = content

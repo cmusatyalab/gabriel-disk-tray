@@ -5,7 +5,12 @@ Cognitive Assistance for assembling a disk tray.
 Please see [Dockerfile](Dockerfile) for details.
 
 # How to Run
-## Container
+## Client
+Run Gabriel's [legacy Android Client](https://github.com/cmusatyalab/gabriel/tree/master/client/legacy-android-client). You need Android Studio to compile and install the apk.
+Make sure to change IP address of GABRIEL_IP variable at src/edu/cmu/cs/gabriel/Const.java to point to your server.
+
+## Server
+### Container
 ```bash
 nvidia-docker run --rm -it --name disktray \
 -p 0.0.0.0:9098:9098 -p 0.0.0.0:9111:9111 -p 0.0.0.0:22222:22222 \
@@ -13,7 +18,7 @@ nvidia-docker run --rm -it --name disktray \
 -e "DISKTRAY_VIDEO_SERVER_URL=http://<server-public-ip-or-hostname>:8080"  \
 jamesjue/gabriel-disk-tray:latest
 ```
-## Source
+### Source
   1. Set following environment variables
       1. DISKTRAY_FASTER_RCNN_ROOT
       2. DISKTRAY_VIDEO_SERVER_URL

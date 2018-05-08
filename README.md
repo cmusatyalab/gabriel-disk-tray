@@ -1,4 +1,4 @@
-# Overview
+# Overview [![Docker Build Status](https://img.shields.io/docker/build/jamesjue/gabriel-disk-tray.svg)](https://hub.docker.com/r/jamesjue/gabriel-disk-tray)
 Cognitive Assistance for assembling a disk tray.
 
 # Installation

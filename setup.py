@@ -2,7 +2,7 @@ from __future__ import absolute_import
 from __future__ import division
 from __future__ import print_function
 
-from distutils.core import setup
+from setuptools import setup
 
 setup(
     name='disktray',
@@ -10,7 +10,12 @@ setup(
     author='Junjue Wang',
     author_email='junjuew@cs.cmu.edu',
     packages=['disktray'],
-    scripts=['bin/disktrayapp.py'],
+    entry_points={
+        'console_scripts': [
+            'disktrayapp = disktray.app:main',
+            'objectserver.py = disktray.objectserver:main'
+        ]
+    },
     url='https://github.com/junjuew/gabriel-disk-tray',
     license='LICENSE',
     description='DiskTray Wearable Cognitive Assistance.',

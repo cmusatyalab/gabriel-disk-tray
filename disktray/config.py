@@ -17,17 +17,18 @@ from __future__ import absolute_import
 from __future__ import division
 from __future__ import print_function
 
+import os
+from distutils.spawn import find_executable
+
 # If True, configurations are set to process video stream in real-time (use with proxy.py)
 # If False, configurations are set to process one independent image (use with debug.py)
-import os
-
 IS_STREAMING = True
 
 # Pure state detection or generate feedback as well
 RECOGNIZE_ONLY = False
 
 # Port for communication between proxy and task server
-OBJECT_DETECTION_BINARY_PATH = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'objectserver.py')
+OBJECT_DETECTION_BINARY_PATH = find_executable('objectserver.py')
 TASK_SERVER_IP = "127.0.0.1"
 TASK_SERVER_PORT = 2722
 

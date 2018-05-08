@@ -93,8 +93,7 @@ RUN python setup.py install
 # install DiskTray application
 #############################################
 WORKDIR /
-# install twistd to serve video files if they are not installed
-RUN pip install -U twisted
+RUN echo "test"
 RUN git clone https://github.com/junjuew/gabriel-disk-tray.git /gabriel-disk-tray
 WORKDIR /gabriel-disk-tray
 RUN pip install -r requirements.txt
@@ -111,4 +110,4 @@ EXPOSE 9098 9111 22222 8080 7070
 # twistd by default listens on port 8080
 CMD ["bash", "-c", "gabriel-control -n eth0 -l -d & sleep 5; \
                     gabriel-ucomm -s 127.0.0.1:8021 & sleep 5; \
-                    cd /gabriel-disk-tray && twistd -n web --path feedbacks/videos & disktrayapp.py -s 127.0.0.1:8021"]
+                    cd /gabriel-disk-tray; twistd -n web --path feedbacks/videos & disktrayapp.py -s 127.0.0.1:8021"]

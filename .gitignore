@@ -9,3 +9,6 @@ trained_models
 *.pyc
 .idea
 .envrc
+build
+*.egg-info
+dist

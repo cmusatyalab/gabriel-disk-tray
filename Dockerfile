@@ -93,10 +93,13 @@ RUN python setup.py install
 # install DiskTray application
 #############################################
 WORKDIR /
-RUN echo "test"
 RUN git clone https://github.com/junjuew/gabriel-disk-tray.git /gabriel-disk-tray
 WORKDIR /gabriel-disk-tray
 RUN pip install -r requirements.txt
+# matplotlib needs six > 1.10.0
+RUN pip install -U six
+# remove the debug display since X11 forwarding inside Docker is painful
+RUN sed -i 's%DISPLAY_LIST_TASK.*$%DISPLAY_LIST_TASK = []%' disktray/config.py
 RUN python setup.py install
 RUN bash -e /gabriel-disk-tray/scripts/download_asset.sh
 
@@ -110,4 +113,4 @@ EXPOSE 9098 9111 22222 8080 7070
 # twistd by default listens on port 8080
 CMD ["bash", "-c", "gabriel-control -n eth0 -l -d & sleep 5; \
                     gabriel-ucomm -s 127.0.0.1:8021 & sleep 5; \
-                    cd /gabriel-disk-tray; twistd -n web --path feedbacks/videos & disktrayapp.py -s 127.0.0.1:8021"]
+                    cd /gabriel-disk-tray; twistd -n web --path feedbacks/videos & disktrayapp -s 127.0.0.1:8021"]

@@ -1,7 +1,19 @@
 # Overview
 Cognitive Assistance for assembling a disk tray.
 
-# Run
+# Installation
+Please see [Dockerfile](Dockerfile) for details.
+
+# How to Run
+## Container
+```bash
+nvidia-docker run --rm -it --name disktray \
+-p 0.0.0.0:9098:9098 -p 0.0.0.0:9111:9111 -p 0.0.0.0:22222:22222 \
+-p 0.0.0.0:7070:7070 -p 0.0.0.0:8080:8080 \
+-e "DISKTRAY_VIDEO_SERVER_URL=http://<server-public-ip-or-hostname>:8080"  \
+jamesjue/gabriel-disk-tray:latest
+```
+## Source
   1. Set following environment variables
       1. DISKTRAY_FASTER_RCNN_ROOT
       2. DISKTRAY_VIDEO_SERVER_URL
@@ -23,8 +35,7 @@ Cognitive Assistance for assembling a disk tray.
   docker run -dit --name my-apache-app \
   -p 8080:80 -v "$PWD":/usr/local/apache2/htdocs/ httpd:2.4
   ```
-  3. Start the video and sound server when doing the demo
   4. Run the DiskTray cognitive engine
   ```bash
-  python disktray/app.py -s 127.0.0.1:8021
+  disktrayapp -s 127.0.0.1:8021
   ```

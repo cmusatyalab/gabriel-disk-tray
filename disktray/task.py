@@ -166,7 +166,7 @@ class Task(object):
                             self._set_instruction(result, "The lever is misplaced. Please make sure it is secure.",
                                                   "dangling.jpg", "dangling.mp4")
         elif self.current_state == "guide":
-            if self._cumulative_object_counters['tray'] == 5:
+            if self._cumulative_object_counters['tray'] == 10:
                 if self._check_tray_horizontal(objects):
                     self._set_instruction(result,
                                           "Okay. Find the cap and show me the side view with pin holding up",

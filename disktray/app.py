@@ -85,6 +85,9 @@ class DiskTrayApp(gabriel.proxy.CognitiveProcessThread):
         # task initialization
         self.task = task.Task()
 
+        # TODO: fix this hack
+        self._previous_state = None
+
         # GPU machine offloaded part
         try:
             self.task_server_sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -205,6 +208,14 @@ class DiskTrayApp(gabriel.proxy.CognitiveProcessThread):
 
         # send instructions back to client or the demo servers
         header['status'] = 'success'
+
+        # TODO: this is a hack below to turn on torch for client
+        if self._previous_state == 'assembled' and self.task.current_state == 'pin':
+            header[gabriel.Protocol_client.JSON_KEY_CONTROL_MESSAGE] = \
+                json.dumps({gabriel.Protocol_control.JSON_KEY_FLASHLIGHT: True})
+            instruction['speech'] = 'Opening torch'
+        self._previous_state = self.task.current_state
+
         if instruction.get('speech', None) is not None:
             result['speech'] = instruction['speech']
             display_verbal_guidance(result['speech'])

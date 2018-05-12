@@ -1,4 +1,4 @@
-# Overview [![Build Status][travis-image]][travis] [![Docker Image Status][docker-image]][docker] [![Release][release-image]][releases] [![License][license-image]][license] [![Gitter][gitter-image]][gitter]
+# Overview [![Build Status][travis-image]][travis] [![Docker Image Status][docker-image]][docker] [![License][license-image]][license] [![Gitter][gitter-image]][gitter]
 Cognitive Assistance for assembling a disk tray.
 
 [docker-image]: https://img.shields.io/docker/build/jamesjue/gabriel-disk-tray.svg

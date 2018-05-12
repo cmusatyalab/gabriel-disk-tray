@@ -1,0 +1,19 @@
+sudo: requires
+services:
+  - docker
+
+language: python
+python:
+  - "2.7"
+
+before_install:
+  - sudo apt-get update -qq
+
+install:
+  - docker pull jamesjue/gabriel-disk-tray
+
+script:
+  - |
+    docker run --name disktray \
+    jamesjue/gabriel-disk-tray:latest \
+    /bin/bash -c "cd /gabriel-disk-tray; python2 setup.py install"

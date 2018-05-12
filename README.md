@@ -11,7 +11,7 @@ Cognitive Assistance for assembling a disk tray.
 [license]: LICENSE
 
 [gitter-image]: https://badges.gitter.im/Join%20Chat.svg
-[gitter]: https://gitter.im/junjuew/gabriel-disk-tray
+[gitter]: https://gitter.im/gabriel-disk-tray
 
 # Installation
 Running the application using Docker is advised. If you want to install from source, please see [Dockerfile](Dockerfile) for details.

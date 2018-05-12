@@ -1,5 +1,17 @@
-# Overview [![Docker Build Status](https://img.shields.io/docker/build/jamesjue/gabriel-disk-tray.svg)](https://hub.docker.com/r/jamesjue/gabriel-disk-tray)
+# Overview [![Build Status][travis-image]][travis] [![Docker Image Status][docker-image]][docker] [![Release][release-image]][releases] [![License][license-image]][license] [![Gitter][gitter-image]][gitter]
 Cognitive Assistance for assembling a disk tray.
+
+[docker-image]: https://img.shields.io/docker/build/jamesjue/gabriel-disk-tray.svg
+[docker]: https://hub.docker.com/r/jamesjue/gabriel-disk-tray
+
+[travis-image]: https://travis-ci.org/junjuew/gabriel-disk-tray.svg?branch=master
+[travis]: http://travis-ci.org/junjuew/gabriel-disk-tray
+
+[license-image]: http://img.shields.io/badge/license-Apache--2-blue.svg?style=flat
+[license]: LICENSE
+
+[gitter-image]: https://badges.gitter.im/Join%20Chat.svg
+[gitter]: https://gitter.im/junjuew/gabriel-disk-tray
 
 # Installation
 Running the application using Docker is advised. If you want to install from source, please see [Dockerfile](Dockerfile) for details.

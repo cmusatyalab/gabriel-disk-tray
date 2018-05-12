@@ -196,7 +196,7 @@ class DiskTrayApp(gabriel.proxy.CognitiveProcessThread):
             header[gabriel.Protocol_measurement.JSON_KEY_APP_SYMBOLIC_TIME] = time.time()
 
         # get instruction based on state
-        instruction = self.task.get_instruction(objects)
+        instruction, control = self.task.get_instruction(objects)
         if instruction['status'] != 'success':
             return json.dumps(result)
 
@@ -221,6 +221,10 @@ class DiskTrayApp(gabriel.proxy.CognitiveProcessThread):
                 data = result['video']
                 packet = struct.pack("!I%ds" % len(data), len(data), data)
                 self.video_sock.sendall(packet)
+
+        # send sensor control back
+        if control:
+            header[gabriel.Protocol_client.JSON_KEY_CONTROL_MESSAGE] = json.dumps(control)
         return json.dumps(result)
 
 

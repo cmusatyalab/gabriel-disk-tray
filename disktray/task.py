@@ -22,8 +22,10 @@ from __future__ import print_function
 
 import collections
 import os
+import time
 
 import cv2
+import gabriel
 from logzero import logger
 
 from disktray import config, util
@@ -34,6 +36,8 @@ class Task(object):
         self.current_state = "start"
         # how many consecutive frames an object has appeared
         self._cumulative_object_counters = collections.defaultdict(int)
+        self._minimal_seconds_between_runs = 20
+        self._last_run_finish_time = -float("inf")
 
     def _check_lever_at_bottom_left_of_tray(self, objects):
         tray = util.get_sorted_objects_by_category(objects, 'tray')[0]
@@ -108,26 +112,36 @@ class Task(object):
         if config.VIDEO_GUIDANCE:
             result['video'] = config.VIDEO_SERVER_URL + '/' + video_name
 
+    # TODO: The state machine can be constructed using a builder pattern
     def get_instruction(self, objects):
         """
-        Get instructions for the next state
+        Task Model. Return instructions for the next state
         :param objects: [[x1, y1, x2, y2, confidence, cls_idx]]
-        :return:
+        :return: A tuple of dictionaries. The first dict contains instructions in text, image, and video format. The
+        second dict contains sensor control
         """
+        # instructions
         result = {'status': "success"}
+        # sensor control
+        control = {}
+
+        # restart the demo after the last run is finished for a while
+        if self.current_state == 'finished' and (time.time() - self._last_run_finish_time >
+                                                 self._minimal_seconds_between_runs):
+            self.current_state = "start"
 
         # the start
         if self.current_state == "start":
             self._set_instruction(result, "Put the tray on the table.", "tray.jpg", "tray.mp4")
             self.current_state = "nothing"
-            return result
+            return result, control
 
         # when no object is detected
         if len(objects) == 0:
             self._cumulative_object_counters.clear()
-            return result
+            return result, control
 
-        # get the count of detected objects
+        # there are some interesting objects in the frame
         current_object_counts = {}
         for idx, object_name in enumerate(config.LABELS):
             object_cnt = sum(objects[:, -1] == idx)
@@ -187,6 +201,8 @@ class Task(object):
                                       "pin.mp4"
                                       )
                 self.current_state = "pin"
+                # The pin is very small. Flashlight needs to be turned on for reliable detection
+                control[gabriel.Protocol_control.JSON_KEY_FLASHLIGHT] = True
         elif self.current_state == "pin":
             if self._cumulative_object_counters['pin'] == 2:
                 self._set_instruction(result, "Please place the pin into the slot.", "pin.jpg",
@@ -195,14 +211,17 @@ class Task(object):
                 self._set_instruction(result, "Fabulous. Now close the lever.",
                                       "clamped.jpg", "clamped.mp4")
                 self.current_state = "clamped"
+                control[gabriel.Protocol_control.JSON_KEY_FLASHLIGHT] = False
         elif self.current_state == "clamped":
             clamped_objects = util.get_sorted_objects_by_category(objects, 'clamped')
             if len(clamped_objects) > 0 and clamped_objects[0][-2] > 0.9:
                 self._set_instruction(result, "Finished! Congratulations!", "finshed.jpg",
                                       "finished.mp4")
                 self.current_state = "finished"
+                self._last_run_finish_time = time.time()
 
         if not config.VIDEO_GUIDANCE:
             if 'video' in result:
                 del result['video']
-        return result
+
+        return result, control

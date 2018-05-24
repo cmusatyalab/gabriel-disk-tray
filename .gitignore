@@ -1,9 +1,14 @@
 experiment*
 test_images
-scripts/.idea
+*/.idea
 model/*
 base/faster_rcnn*
 env
 trained_models
 */*.pyc
 *.pyc
+.idea
+.envrc
+build
+*.egg-info
+dist

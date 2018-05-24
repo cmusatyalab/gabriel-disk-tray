@@ -1,4 +1,3 @@
-#!/usr/bin/env python2
 # Copyright (C) 2018 Carnegie Mellon University. All Rights Reserved.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -197,7 +196,7 @@ class DiskTrayApp(gabriel.proxy.CognitiveProcessThread):
             header[gabriel.Protocol_measurement.JSON_KEY_APP_SYMBOLIC_TIME] = time.time()
 
         # get instruction based on state
-        instruction = self.task.get_instruction(objects)
+        instruction, control = self.task.get_instruction(objects)
         if instruction['status'] != 'success':
             return json.dumps(result)
 
@@ -222,10 +221,14 @@ class DiskTrayApp(gabriel.proxy.CognitiveProcessThread):
                 data = result['video']
                 packet = struct.pack("!I%ds" % len(data), len(data), data)
                 self.video_sock.sendall(packet)
+
+        # send sensor control back
+        if control:
+            header[gabriel.Protocol_client.JSON_KEY_CONTROL_MESSAGE] = json.dumps(control)
         return json.dumps(result)
 
 
-if __name__ == "__main__":
+def main():
     settings = gabriel.util.process_command_line(sys.argv[1:])
 
     ip_addr, port = gabriel.network.get_registry_server_address(settings.address)

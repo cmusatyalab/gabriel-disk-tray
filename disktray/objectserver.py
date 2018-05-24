@@ -119,7 +119,7 @@ class IkeaProcessing(threading.Thread):
         self.stop.set()
 
 
-if __name__ == "__main__":
+def main():
     # a thread to receive incoming images
     ikea_processing = IkeaProcessing()
     ikea_processing.start()
@@ -135,3 +135,7 @@ if __name__ == "__main__":
     finally:
         if ikea_processing is not None:
             ikea_processing.terminate()
+
+
+if __name__ == "__main__":
+    main()

@@ -27,9 +27,8 @@ import os
 import sys
 import time
 
-# faster rcnn
-faster_rcnn_root = os.getenv('FASTER_RCNN_ROOT')
-sys.path.append(os.path.join(faster_rcnn_root, "tools"))
+from disktray import config
+sys.path.append(os.path.join(config.FASTER_RCNN_ROOT, "tools"))
 # needed to intialize paths required by faster-rcnn
 import _init_paths
 # use _init_paths, just to make sure pycharm doesn't remove the _init_paths imports
@@ -40,17 +39,16 @@ from fast_rcnn.config import cfg as faster_rcnn_config
 from fast_rcnn.test import im_detect
 from fast_rcnn.nms_wrapper import nms
 
-sys.path.append(os.path.join(faster_rcnn_root, "python"))
+sys.path.append(os.path.join(config.FASTER_RCNN_ROOT, "python"))
 import caffe
-from disktray import config
 from disktray import zhuocv as zc
 
 current_milli_time = lambda: int(round(time.time() * 1000))
 
 # initialize caffe module
 faster_rcnn_config.TEST.HAS_RPN = True  # Use RPN for proposals
-prototxt = 'model/faster_rcnn_test.pt'
-caffemodel = 'model/model.caffemodel'
+prototxt = os.path.join(config.MODEL_DIR, 'faster_rcnn_test.pt')
+caffemodel = os.path.join(config.MODEL_DIR, 'model.caffemodel')
 
 if not os.path.isfile(caffemodel):
     raise IOError(('{:s} not found.').format(caffemodel))
@@ -116,8 +114,5 @@ def detect_object(img, resize_ratio=1, confidence_threshold=0.5, nms_threshold=0
 def process(img, confidence_threshold, nms_threshold, resize_ratio=1, display_list=[]):
     img_object, result = detect_object(img, resize_ratio, confidence_threshold=confidence_threshold,
                                        nms_threshold=nms_threshold)
-    zc.check_and_display('object', img_object, display_list, wait_time=config.DISPLAY_WAIT_TIME,
-                         resize_max=config.DISPLAY_MAX_PIXEL)
-
     rtn_msg = {'status': 'success'}
     return (rtn_msg, json.dumps(result.tolist()))

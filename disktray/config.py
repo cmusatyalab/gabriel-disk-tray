@@ -33,14 +33,7 @@ TASK_SERVER_IP = "127.0.0.1"
 TASK_SERVER_PORT = 2722
 
 # DEMO Related Setup
-# Play video
-PLAY_VIDEO = False
-# Port for video server
-DEMO_VIDEO_SERVER = ("128.2.213.185", 5699)
-# Play sound
-PLAY_SOUND = False
-# Port for sound server
-DEMO_SOUND_SERVER = ("128.2.213.185", 4299)
+DEMO_SHOW_ANNOTATED_IMAGE = bool(os.getenv("DISKTRAY_DEMO_SHOW_ANNOTATED_IMAGE", False))
 
 # Configs for object detection
 USE_GPU = True
@@ -57,18 +50,20 @@ IMAGE_PATH_PREFIX = "feedback/images"
 VIDEO_GUIDANCE = True
 VIDEO_SERVER_URL = os.getenv('DISKTRAY_VIDEO_SERVER_URL')
 if VIDEO_GUIDANCE and (VIDEO_SERVER_URL is None or len(VIDEO_SERVER_URL) == 0):
-    raise ValueError('DISKTRAY_VIDEO_SERVER_URL environment variable not specified or not valid!')
+    raise ValueError(
+        'DISKTRAY_VIDEO_SERVER_URL({}) environment variable not specified or not valid!'.format(VIDEO_SERVER_URL))
 
 # Max image width and height
 IMAGE_MAX_WH = 640
 
-# Display
+# ssh X Display flags. Better to use gabriel's debug webserver
+# To see annotated input stream with detected object, use 'object'
 DISPLAY_MAX_PIXEL = 400
 DISPLAY_SCALE = 1
 DISPLAY_LIST_ALL = []
 DISPLAY_LIST_TEST = []
 DISPLAY_LIST_STREAM = []
-DISPLAY_LIST_TASK = ['object']
+DISPLAY_LIST_TASK = []
 
 # Used for cvWaitKey
 DISPLAY_WAIT_TIME = 1 if IS_STREAMING else 500

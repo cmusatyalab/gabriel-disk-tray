@@ -95,39 +95,9 @@ class DiskTrayApp(gabriel.proxy.CognitiveProcessThread):
         except socket.error as e:
             LOG.warning(LOG_TAG + "Failed to connect to task server at %s" % str(task_server_addr))
 
-        if config.PLAY_VIDEO:
-            ## for playing sound
-            video_server_addr = config.DEMO_VIDEO_SERVER
-            try:
-                self.video_sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-                self.video_sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
-                self.video_sock.setsockopt(socket.IPPROTO_TCP, socket.TCP_NODELAY, 1)
-                self.video_sock.connect(video_server_addr)
-                LOG.info(LOG_TAG + "connected to video playing server")
-            except socket.error as e:
-                LOG.warning(LOG_TAG + "Failed to connect to video server at %s" % str(video_server_addr))
-
-        if config.PLAY_SOUND:
-            ## for playing sound
-            sound_server_addr = config.DEMO_SOUND_SERVER
-            try:
-                self.sound_sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-                self.sound_sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
-                self.sound_sock.setsockopt(socket.IPPROTO_TCP, socket.TCP_NODELAY, 1)
-                self.sound_sock.connect(sound_server_addr)
-                LOG.info(LOG_TAG + "connected to sound playing server")
-            except socket.error as e:
-                LOG.warning(LOG_TAG + "Failed to connect to sound server at %s" % str(sound_server_addr))
-
     def terminate(self):
         if self.task_server_sock is not None:
             self.task_server_sock.close()
-        if config.PLAY_VIDEO:
-            if self.video_sock is not None:
-                self.video_sock.close()
-        if config.PLAY_SOUND:
-            if self.sound_sock is not None:
-                self.sound_sock.close()
         super(DiskTrayApp, self).terminate()
 
     @staticmethod
@@ -184,11 +154,6 @@ class DiskTrayApp(gabriel.proxy.CognitiveProcessThread):
         # the object detection result format is, for each line: [x1, y1, x2, y2, confidence, cls_idx]
         objects = np.array(json.loads(objects_data))
         objects = reorder_objects(objects)
-        # objects = np.array([[10, 450, 100, 500, 0.9, 0]])
-        if "object" in display_list:
-            img_object = zc.vis_detections(img, objects, config.LABELS)
-            zc.check_and_display("object", img_object, display_list, resize_max=config.DISPLAY_MAX_PIXEL,
-                                 wait_time=config.DISPLAY_WAIT_TIME)
         LOG.info("object detection result: %s" % objects)
 
         # for measurement, when the sysmbolic representation has been got
@@ -203,29 +168,40 @@ class DiskTrayApp(gabriel.proxy.CognitiveProcessThread):
         # suppress duplicate instructions
         self._remove_duplicate_instructions(instruction)
 
+        # display annotated image if needed
+        if "object" in display_list:
+            self._show_annotated_image(img, objects)
+
+        # return annotated image for demo display if needed
+        if config.DEMO_SHOW_ANNOTATED_IMAGE:
+            self._replace_instruction_image_with_annotated_image(img, objects, instruction)
+
         # send instructions back to client or the demo servers
         header['status'] = 'success'
         if instruction.get('speech', None) is not None:
             result['speech'] = instruction['speech']
             display_verbal_guidance(result['speech'])
-            if config.PLAY_SOUND:
-                data = result['speech']
-                packet = struct.pack("!I%ds" % len(data), len(data), data)
-                self.sound_sock.sendall(packet)
         if instruction.get('image', None) is not None:
             feedback_image = b64encode(zc.cv_image2raw(instruction['image']))
             result['image'] = feedback_image
         if instruction.get('video', None) is not None:
             result['video'] = instruction['video']
-            if config.PLAY_VIDEO:
-                data = result['video']
-                packet = struct.pack("!I%ds" % len(data), len(data), data)
-                self.video_sock.sendall(packet)
 
         # send sensor control back
         if control:
             header[gabriel.Protocol_client.JSON_KEY_CONTROL_MESSAGE] = json.dumps(control)
         return json.dumps(result)
+
+    @staticmethod
+    def _show_annotated_image(img, objects):
+        img_object = zc.vis_detections(img, objects, config.LABELS)
+        zc.check_and_display("object", img_object, display_list, resize_max=config.DISPLAY_MAX_PIXEL,
+                             wait_time=config.DISPLAY_WAIT_TIME)
+
+    @staticmethod
+    def _replace_instruction_image_with_annotated_image(img, objects, instruction):
+        img_object = zc.vis_detections(img, objects, config.LABELS)
+        instruction['image'] = img_object
 
 
 def main():

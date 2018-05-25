@@ -28,12 +28,14 @@ nvidia-docker run --rm -it --name disktray \
 -p 0.0.0.0:9098:9098 -p 0.0.0.0:9111:9111 -p 0.0.0.0:22222:22222 \
 -p 0.0.0.0:7070:7070 -p 0.0.0.0:8080:8080 \
 -e "DISKTRAY_VIDEO_SERVER_URL=http://<server-public-ip-or-hostname>:8080"  \
+-e "DISKTRAY_DEMO_SHOW_ANNOTATED_IMAGE=True" \
 jamesjue/gabriel-disk-tray:latest
 ```
 ### Source
   1. Set following environment variables
-      1. DISKTRAY_FASTER_RCNN_ROOT
-      2. DISKTRAY_VIDEO_SERVER_URL
+      1. DISKTRAY_FASTER_RCNN_ROOT: root directory of [py-faster-rcnn](https://github.com/rbgirshick/py-faster-rcnn) installation.
+      2. DISKTRAY_VIDEO_SERVER_URL: video feedback server url.
+      3. DISKTRAY_DEMO_SHOW_ANNOTATED_IMAGE: True or False, whether to show annotated image stream on Gabriel Debug Website.
   1. Start the Gabriel Control and Ucomm server
   ```bash
   docker run --rm --name gabriel -p 0.0.0.0:9098:9098 \

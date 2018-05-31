@@ -30,6 +30,7 @@ from base64 import b64encode
 
 import cv2
 import gabriel
+import gabriel.control
 import gabriel.proxy
 import numpy as np
 
@@ -174,7 +175,7 @@ class DiskTrayApp(gabriel.proxy.CognitiveProcessThread):
 
         # return annotated image for demo display if needed
         if config.DEMO_SHOW_ANNOTATED_IMAGE:
-            self._replace_instruction_image_with_annotated_image(img, objects, instruction)
+            self._add_annotated_image_to_debug_server(header, img, objects)
 
         # send instructions back to client or the demo servers
         header['status'] = 'success'
@@ -199,9 +200,9 @@ class DiskTrayApp(gabriel.proxy.CognitiveProcessThread):
                              wait_time=config.DISPLAY_WAIT_TIME)
 
     @staticmethod
-    def _replace_instruction_image_with_annotated_image(img, objects, instruction):
-        img_object = zc.vis_detections(img, objects, config.LABELS)
-        instruction['image'] = img_object
+    def _add_annotated_image_to_debug_server(header, img, objects):
+        annotated_img_object = zc.vis_detections(img, objects, config.LABELS)
+        header[gabriel.Protocol_debug.JSON_KEY_ANNOTATED_INPUT_IMAGE] = b64encode(zc.cv_image2raw(annotated_img_object))
 
 
 def main():

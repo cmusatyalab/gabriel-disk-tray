@@ -28,9 +28,11 @@ import sys
 import time
 
 from disktray import config
+
 sys.path.append(os.path.join(config.FASTER_RCNN_ROOT, "tools"))
 # needed to intialize paths required by faster-rcnn
 import _init_paths
+
 # use _init_paths, just to make sure pycharm doesn't remove the _init_paths imports
 # when reformatting code
 with open(os.devnull, 'w') as f:
@@ -41,7 +43,6 @@ from fast_rcnn.nms_wrapper import nms
 
 sys.path.append(os.path.join(config.FASTER_RCNN_ROOT, "python"))
 import caffe
-from disktray import zhuocv as zc
 
 current_milli_time = lambda: int(round(time.time() * 1000))
 

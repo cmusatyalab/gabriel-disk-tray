@@ -42,7 +42,7 @@ jamesjue/gabriel-disk-tray:latest
   -p 0.0.0.0:9111:9111 -p 0.0.0.0:22222:22222 -p 10120:10120 \
   -p 8021:8021 -p 9090:9090 -p 10101:10101 \
   jamesjue/gabriel /bin/bash -c \
-  "gabriel-control -l -n eth0 & sleep 5; gabriel-ucomm -s 127.0.0.1:8021"
+  "gabriel-control -l -d -n eth0 & sleep 5; gabriel-ucomm -s 127.0.0.1:8021"
   ```
   2. Download the asset file
   ```bash

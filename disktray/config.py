@@ -46,6 +46,7 @@ CONFIDENCE_THRESHOLD = 0.7
 NMS_THRESHOLD = 0.3
 
 # Whether to use video or image feedback
+IMAGE_GUIDANCE = False
 IMAGE_PATH_PREFIX = "feedback/images"
 VIDEO_GUIDANCE = True
 VIDEO_SERVER_URL = os.getenv('DISKTRAY_VIDEO_SERVER_URL')

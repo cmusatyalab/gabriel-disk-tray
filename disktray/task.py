@@ -108,7 +108,8 @@ class Task(object):
     def _set_instruction(result, speech, image_name, video_name):
         result['speech'] = speech
         image_path = os.path.join(config.IMAGE_PATH_PREFIX, image_name)
-        result['image'] = cv2.imread(image_path) if image_path else None
+        if config.IMAGE_GUIDANCE:
+            result['image'] = cv2.imread(image_path) if image_path else None
         if config.VIDEO_GUIDANCE:
             result['video'] = config.VIDEO_SERVER_URL + '/' + video_name
 

@@ -1,5 +1,5 @@
-FROM nvidia/cuda:8.0-cudnn5-devel
-MAINTAINER Junjue Wang, junjuew@cs.cmu.edu
+FROM cmusatyalab/gabriel
+MAINTAINER Satyalab, satya-group@lists.andrew.cmu.edu
 
 ARG DEBIAN_FRONTEND=noninteractive
 
@@ -57,43 +57,19 @@ RUN cd lib && \
     make -j$(nproc)
 RUN cd caffe-fast-rcnn && \
     cp Makefile.config.example Makefile.config && \
+    sed -i 's%/usr/lib/python2.7/dist-packages/numpy/core/include%/usr/local/lib/python2.7/dist-packages/numpy/core/include%' Makefile.config && \
     sed -i 's%INCLUDE_DIRS := $(PYTHON_INCLUDE) /usr/local/include%INCLUDE_DIRS := $(PYTHON_INCLUDE) /usr/local/include /usr/include/hdf5/serial/%' Makefile.config && \
     sed -i 's%LIBRARY_DIRS := $(PYTHON_LIB) /usr/local/lib /usr/lib%LIBRARY_DIRS := $(PYTHON_LIB) /usr/local/lib /usr/lib /usr/lib/x86_64-linux-gnu/hdf5/serial/%' Makefile.config && \
     sed -i 's%# WITH_PYTHON_LAYER := 1%WITH_PYTHON_LAYER := 1%' Makefile.config && \
     make -j$(nproc) && \
     make -j$(nproc) pycaffe
 
-#############################################
-# install Gabriel
-#############################################
-WORKDIR /
-RUN apt-get install -y \
-    build-essential \
-    pkg-config \
-    python2.7 \
-    python-dev \
-    python-pip \
-    default-jre \
-    pssh \
-    python-psutil \
-    python-setuptools \
-    python-opencv \
-    git
-
-RUN pip install -U pip
-RUN pip install -U setuptools
-RUN pip install -U numpy
-
-RUN git clone https://github.com/cmusatyalab/gabriel.git /gabriel
-WORKDIR /gabriel/server
-RUN pip install -r requirements.txt
-RUN python setup.py install
 
 #############################################
 # install DiskTray application
 #############################################
 WORKDIR /
-RUN git clone https://github.com/junjuew/gabriel-disk-tray.git /gabriel-disk-tray
+RUN git clone https://github.com/cmusatyalab/gabriel-disk-tray.git /gabriel-disk-tray
 WORKDIR /gabriel-disk-tray
 RUN pip install -r requirements.txt
 # matplotlib needs six > 1.10.0

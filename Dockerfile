@@ -87,6 +87,6 @@ ENV DISKTRAY_VIDEO_SERVER_URL ""
 EXPOSE 9098 9111 22222 8080 7070
 # Start gabriel, disktray application, and a twistd server for serving video instructions
 # twistd by default listens on port 8080
-CMD ["bash", "-c", "gabriel-control -n eth0 -l -d & sleep 5; \
+CMD ["bash", "-c", "gabriel-control -d -n eth0 -l -d & sleep 5; \
                     gabriel-ucomm -s 127.0.0.1:8021 & sleep 5; \
                     cd /gabriel-disk-tray; twistd -n web --path feedbacks/videos & disktrayapp -s 127.0.0.1:8021"]

@@ -1,5 +1,6 @@
-# Overview [![Build Status][travis-image]][travis] [![Docker Image Status][docker-image]][docker] [![License][license-image]][license] [![Gitter][gitter-image]][gitter]
-Cognitive Assistance for assembling a disk tray.
+# Disk Tray Cognitive Assistance [![Build Status][travis-image]][travis] [![Docker Image Status][docker-image]][docker] [![License][license-image]][license] [![Gitter][gitter-image]][gitter]
+
+Cognitive assistance application for assembling a disk tray. In collaboration with the company [inwinSTACK](http://www.inwinstack.com/en/home/), we created a Gabriel application for training a new worker in disk tray assembly for a desktop.
 
 [docker-image]: https://img.shields.io/docker/build/cmusatyalab/gabriel-disk-tray.svg
 [docker]: https://hub.docker.com/r/cmusatyalab/gabriel-disk-tray
@@ -13,25 +14,29 @@ Cognitive Assistance for assembling a disk tray.
 [gitter-image]: https://badges.gitter.im/Join%20Chat.svg
 [gitter]: https://gitter.im/gabriel-disk-tray/LOBBY
 
-# Installation
-## Client
+## Demo
+This demo was shown live at the Computex 2018 show in Taiwan in June 2018.   The application was created by Junjue Wang of CMU, and demoed at Computex by inwinSTACK employees.   The small size of some of the components (especially the pin) and the precise nature of the assembly were difficult challenges to overcome in creating this application.  The wearable device used in this application is an ODG-7.
+[![Demo](https://img.youtube.com/vi/AwWZcL9XGI0/0.jpg)](https://www.youtube.com/watch?v=AwWZcL9XGI0)
+
+## Installation
+### Client
 An Android client is available on the Google PlayStore 
 
 <a href='https://play.google.com/store/apps/details?id=edu.cmu.cs.gabrielclient'><img height='125px' width='323px' alt='Get it on Google Play' src='https://play.google.com/intl/en_us/badges/images/generic/en_badge_web_generic.png'/></a>
 
 Google Play and the Google Play logo are trademarks of Google LLC.
 
-## Server
+### Server
 Running the server application using Docker is advised. If you want to install from source, please see [Dockerfile](Dockerfile) for details.
 
 
-# How to Run
-## Client
+## How to Run
+### Client
 From the main activity one can add servers by name and IP/domain. Subtitles for audio feedback can also been toggled. This option is useful for devices that may not have integrated speakers(like ODG R-7).
 Pressing the 'Play' button next to a server will initiate a connection to the Gabriel server at that address.
 
-## Server
-### Container
+### Server
+#### Container
 ```bash
 nvidia-docker run --rm -it --name disktray \
 -p 0.0.0.0:9098:9098 -p 0.0.0.0:9111:9111 -p 0.0.0.0:22222:22222 \
@@ -40,7 +45,7 @@ nvidia-docker run --rm -it --name disktray \
 -e "DISKTRAY_DEMO_SHOW_ANNOTATED_IMAGE=True" \
 jamesjue/gabriel-disk-tray:latest
 ```
-### Source
+#### Source
   1. Set following environment variables
       1. DISKTRAY_FASTER_RCNN_ROOT: root directory of [py-faster-rcnn](https://github.com/rbgirshick/py-faster-rcnn) installation.
       2. DISKTRAY_VIDEO_SERVER_URL: video feedback server url.

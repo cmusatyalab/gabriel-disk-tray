@@ -21,7 +21,7 @@ This [video demo](https://www.youtube.com/watch?v=AwWZcL9XGI0) was shown live at
 ### Client
 An Android client is available on the Google PlayStore 
 
-<a href='https://play.google.com/store/apps/details?id=edu.cmu.cs.gabrielclient'><img height='80px' width='120px' alt='Get it on Google Play' src='https://play.google.com/intl/en_us/badges/images/generic/en_badge_web_generic.png'/></a>
+<a href='https://play.google.com/store/apps/details?id=edu.cmu.cs.gabrielclient'><img height='58px' width='120px' alt='Get it on Google Play' src='https://play.google.com/intl/en_us/badges/images/generic/en_badge_web_generic.png'/></a>
 
 ### Server
 Running the server application using Docker is advised. If you want to install from source, please see [Dockerfile](Dockerfile) for details.

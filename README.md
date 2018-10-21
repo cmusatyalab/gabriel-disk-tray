@@ -15,8 +15,7 @@ Cognitive assistance application for assembling a disk tray. In collaboration wi
 [gitter]: https://gitter.im/gabriel-disk-tray/LOBBY
 
 ## Demo
-This demo was shown live at the Computex 2018 show in Taiwan in June 2018.   The application was created by Junjue Wang of CMU, and demoed at Computex by inwinSTACK employees.   The small size of some of the components (especially the pin) and the precise nature of the assembly were difficult challenges to overcome in creating this application.  The wearable device used in this application is an ODG-7.
-[![Demo](https://img.youtube.com/vi/AwWZcL9XGI0/0.jpg)](https://www.youtube.com/watch?v=AwWZcL9XGI0)
+This [video demo](https://www.youtube.com/watch?v=AwWZcL9XGI0) was shown live at the Computex 2018 show in Taiwan in June 2018.   The application was created by Junjue Wang of CMU, and demoed at Computex by inwinSTACK employees.   The small size of some of the components (especially the pin) and the precise nature of the assembly were difficult challenges to overcome in creating this application.  The wearable device used in this application is an ODG-7.
 
 ## Installation
 ### Client

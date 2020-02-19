@@ -17,6 +17,7 @@
 This video server receives an url of a video instruction and opens the video up in a web-browser. This is video
 server is used in demos to let audience see what the wearable device is showing to the user.
 """
+from builtins import str
 import socket
 import struct
 import sys

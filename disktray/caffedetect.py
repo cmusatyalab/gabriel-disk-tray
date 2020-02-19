@@ -17,6 +17,7 @@ from __future__ import absolute_import
 from __future__ import division
 from __future__ import print_function
 
+from builtins import range
 import matplotlib
 
 matplotlib.use('Agg')
@@ -81,7 +82,7 @@ def detect_object(img, resize_ratio=1, confidence_threshold=0.5, nms_threshold=0
     scores, boxes = im_detect(net, img)
 
     result = None
-    for cls_idx in xrange(len(config.LABELS)):
+    for cls_idx in range(len(config.LABELS)):
         cls_idx += 1  # because we skipped background
         cls_boxes = boxes[:, 4 * cls_idx: 4 * (cls_idx + 1)]
         cls_scores = scores[:, cls_idx]

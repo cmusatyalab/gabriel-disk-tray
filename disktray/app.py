@@ -17,7 +17,11 @@ from __future__ import absolute_import
 from __future__ import division
 from __future__ import print_function
 
-import Queue
+from future import standard_library
+standard_library.install_aliases()
+from builtins import str
+from builtins import range
+import queue
 import copy
 import json
 import multiprocessing
@@ -56,7 +60,7 @@ def reorder_objects(result):
             line = line.strip()
             object_mapping[idx] = config.LABELS.index(line)
 
-    for i in xrange(result.shape[0]):
+    for i in range(result.shape[0]):
         result[i, -1] = object_mapping[int(result[i, -1] + 0.1)]
 
     return result
@@ -225,7 +229,7 @@ def main():
     time.sleep(15)
 
     # image receiving thread
-    image_queue = Queue.Queue(gabriel.Const.APP_LEVEL_TOKEN_SIZE)
+    image_queue = queue.Queue(gabriel.Const.APP_LEVEL_TOKEN_SIZE)
     LOG.info("TOKEN SIZE OF OFFLOADING ENGINE: %d" % gabriel.Const.APP_LEVEL_TOKEN_SIZE)
     video_streaming = gabriel.proxy.SensorReceiveClient((video_ip, video_port), image_queue)
     video_streaming.start()

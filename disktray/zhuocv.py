@@ -16,7 +16,11 @@
 '''
 This is a simple library file for common CV tasks
 '''
+from __future__ import print_function
+from __future__ import division
 
+from builtins import range
+from past.utils import old_div
 import cv2
 import math
 import numpy as np
@@ -32,7 +36,7 @@ def ind2sub(size, idx):
     Convert an index to a tuple of (row_idx, col_idx)
     @size is the size of the image: (n_rows, n_cols)
     '''
-    return (idx / size[1], idx % size[1])
+    return (old_div(idx, size[1]), idx % size[1])
 
 def euc_dist(p1, p2):
     p1 = np.array(p1)
@@ -127,7 +131,7 @@ def get_mask(img, rtn_type = "mask", th = 0):
     img_shape = img.shape
     if len(img_shape) > 2 and img_shape[2] > 1: # color image
         mask = np.zeros(img_shape[0:2], dtype = bool)
-        for i in xrange(img_shape[2]):
+        for i in range(img_shape[2]):
             mask = np.bitwise_or(mask, img[:,:,i] > th)
     else:
         mask = img > th
@@ -402,13 +406,13 @@ def display_image(display_name, img, wait_time = -1, is_resize = True, resize_me
         height = img_shape[0]; width = img_shape[1]
         if resize_max > 0:
             if height > width:
-                img_display = cv2.resize(img, (resize_max * width / height, resize_max), interpolation = cv2.INTER_NEAREST)
+                img_display = cv2.resize(img, (old_div(resize_max * width, height), resize_max), interpolation = cv2.INTER_NEAREST)
             else:
-                img_display = cv2.resize(img, (resize_max, resize_max * height / width), interpolation = cv2.INTER_NEAREST)
+                img_display = cv2.resize(img, (resize_max, old_div(resize_max * height, width)), interpolation = cv2.INTER_NEAREST)
         elif resize_scale > 0:
             img_display = cv2.resize(img, (width * resize_scale, height * resize_scale), interpolation = cv2.INTER_NEAREST)
         else:
-            print "Unexpected parameter in image display. About to exit..."
+            print("Unexpected parameter in image display. About to exit...")
             sys.exit()
     else:
         img_display = img
@@ -440,7 +444,7 @@ def plot_bar(bar_data, name = 'unknown', h = 400, w = 400, wait_time = -1, is_re
     y_max = np.max(bar_data) * 1.1 + 1 # make sure y_max > 0
     plot = np.ones((h, w, 3), dtype = np.uint8) * 255
     for i, bar_h in enumerate(bar_data):
-        cv2.rectangle(plot, (int((i + 1 - 0.3) / (n_items + 1) * w), h), (int((i + 1 - 0.3) / (n_items + 1) * w), h - int(bar_h / y_max * h)), [255, 0, 0], -1)
+        cv2.rectangle(plot, (int(old_div((i + 1 - 0.3), (n_items + 1)) * w), h), (int(old_div((i + 1 - 0.3), (n_items + 1)) * w), h - int(old_div(bar_h, y_max) * h)), [255, 0, 0], -1)
     cv2.putText(plot, "max = %f" % np.max(bar_data), (10, 30), cv2.FONT_HERSHEY_SIMPLEX, 1, [0, 0, 255])
     display_image(name, plot, wait_time, is_resize, resize_method, resize_max, resize_scale, save_image)
 
@@ -472,7 +476,7 @@ def is_roughly_square(cnt, th_diff = 0.7, th_area = 0.6):
     max_p = cnt.max(axis = 0)
     min_p = cnt.min(axis = 0)
     diff_p = (max_p - min_p)[0]
-    return (float(diff_p.min()) / diff_p.max() > th_diff) and (float(cv2.contourArea(cnt)) / diff_p[0] / diff_p[1] > th_area)
+    return (float(diff_p.min()) / diff_p.max() > th_diff) and (old_div(float(cv2.contourArea(cnt)) / diff_p[0], diff_p[1]) > th_area)
 
 def is_roughly_convex(cnt, threshold = 0.9):
     hull = cv2.convexHull(cnt)
@@ -492,7 +496,7 @@ def is_line_seg_close(line1, line2):
     v3 = pt2_2 - pt1_1
     area1 = np.absolute(np.cross(v1, v2))
     area2 = np.absolute(np.cross(v1, v3))
-    if max(area1, area2) < l1 * l2 / 3:
+    if max(area1, area2) < old_div(l1 * l2, 3):
         return True
     else:
         return False
@@ -508,8 +512,8 @@ def is_line_seg_close2(line1, line2):
     v3 = pt2_2 - pt1_1
     area1 = np.absolute(np.cross(v1, v2))
     area2 = np.absolute(np.cross(v1, v3))
-    d1 = area1 * 2 / l1
-    d2 = area2 * 2 / l1
+    d1 = old_div(area1 * 2, l1)
+    d2 = old_div(area2 * 2, l1)
     return (d1 <= 3 and d2 <= 3)
 
 
@@ -518,8 +522,8 @@ def line_interset(a, b):
     x3 = b[0]; y3 = b[1]; x4 = b[2]; y4 = b[3]
     d = ((float)(x1-x2) * (y3-y4)) - ((y1-y2) * (x3-x4))
     if d:
-        x = ((x1*y2 - y1*x2) * (x3-x4) - (x1-x2) * (x3*y4 - y3*x4)) / d
-        y = ((x1*y2 - y1*x2) * (y3-y4) - (y1-y2) * (x3*y4 - y3*x4)) / d
+        x = old_div(((x1*y2 - y1*x2) * (x3-x4) - (x1-x2) * (x3*y4 - y3*x4)), d)
+        y = old_div(((x1*y2 - y1*x2) * (y3-y4) - (y1-y2) * (x3*y4 - y3*x4)), d)
     else:
         x, y = (-1, -1)
     return (x, y)
@@ -547,7 +551,7 @@ def get_corner_pts(bw, perimeter = None, center = None, method = 'line', is_debu
         center = (center[1], center[0]) # in (x, y) format
         perimeter = int(perimeter)
 
-        lines = cv2.HoughLinesP(bw, 1, np.pi/180, perimeter / 40, minLineLength = perimeter / 20, maxLineGap = perimeter / 20)
+        lines = cv2.HoughLinesP(bw, 1, old_div(np.pi,180), old_div(perimeter, 40), minLineLength = old_div(perimeter, 20), maxLineGap = old_div(perimeter, 20))
         lines = lines[0]
 
         if is_debug:
@@ -555,7 +559,7 @@ def get_corner_pts(bw, perimeter = None, center = None, method = 'line', is_debu
             for line in lines:
                 pt1 = (line[0], line[1])
                 pt2 = (line[2], line[3])
-                print (pt1, pt2)
+                print((pt1, pt2))
                 cv2.line(img, pt1, pt2, (255, 255, 255), 1)
             cv2.namedWindow('test')
             display_image('test', img)
@@ -571,7 +575,7 @@ def get_corner_pts(bw, perimeter = None, center = None, method = 'line', is_debu
             if flag:
                 new_lines.append(list(line))
         if is_debug:
-            print "four lines: %s" % new_lines
+            print("four lines: %s" % new_lines)
         if len(new_lines) != 4:
             return None
 
@@ -585,10 +589,10 @@ def get_corner_pts(bw, perimeter = None, center = None, method = 'line', is_debu
                 if inter_p == (-1, -1):
                     continue
                 dist = euc_dist(inter_p, center)
-                if dist < perimeter / 3:
+                if dist < old_div(perimeter, 3):
                     corners.append(inter_p)
         if is_debug:
-            print "corners: %s" % corners
+            print("corners: %s" % corners)
         if len(corners) != 4:
             return None
 
@@ -609,7 +613,7 @@ def get_corner_pts(bw, perimeter = None, center = None, method = 'line', is_debu
         bl = list(bl)
         br = list(br)
         if is_debug:
-            print "ul: %s, ur: %s, bl: %s, br: %s" % (ul, ur, bl, br)
+            print("ul: %s, ur: %s, bl: %s, br: %s" % (ul, ur, bl, br))
 
         # some sanity check here
         if sanity_checks == "perspective":
@@ -645,7 +649,7 @@ def calc_triangle_area(p1, p2, p3):
     return abs((p1[0] * (p2[1] - p3[1]) + p2[0] * (p3[1] - p1[1]) + p3[0] * (p1[1] - p2[1])) / 2.0)
 
 def get_rotation_degree(bw):
-    lines = cv2.HoughLinesP(bw, 1, np.pi/180, 6, minLineLength = 8, maxLineGap = 5)
+    lines = cv2.HoughLinesP(bw, 1, old_div(np.pi,180), 6, minLineLength = 8, maxLineGap = 5)
     if lines is None:
         return None
     lines = lines[0]
@@ -665,10 +669,10 @@ def get_rotation_degree(bw):
         x_diff = line[0] - line[2]
         y_diff = line[1] - line[3]
         if x_diff == 0:
-            degree = np.pi / 2 # TODO
+            degree = old_div(np.pi, 2) # TODO
         else:
             degree = np.arctan(float(y_diff) / x_diff)
-        degrees[line_idx] = degree * 180 / np.pi
+        degrees[line_idx] = old_div(degree * 180, np.pi)
         # get an angle in (-45, 45]
         if degrees[line_idx] <= 0:
             degrees[line_idx] += 90
@@ -693,7 +697,7 @@ def get_rotation_degree(bw):
         angle_diff = angle_dist(consensus_degree, degree_cmp, angle_range = 90)
         if abs(angle_diff) < 5:
             best_degree += angle_diff * (10 - abs(angle_diff))
-    best_degree = best_degree / max_vote + consensus_degree
+    best_degree = old_div(best_degree, max_vote) + consensus_degree
     if best_degree > 45:
         best_degree -= 90
     if best_degree <= -45:
@@ -709,7 +713,7 @@ def rotate(img, n_iterations = 2):
     img_ret = img
     rotation_degree = 0
     rotation_mtx = None
-    for iteration in xrange(n_iterations): # Sometimes need multiple iterations to get the rotation right
+    for iteration in range(n_iterations): # Sometimes need multiple iterations to get the rotation right
         bw = cv2.cvtColor(img_ret, cv2.COLOR_BGR2GRAY)
         edges = cv2.Canny(bw, 50, 100)
         rotation_degree_tmp = get_rotation_degree(edges)
@@ -717,7 +721,7 @@ def rotate(img, n_iterations = 2):
             rtn_msg = {'status' : 'fail', 'message' : 'Cannot get rotation degree'}
             return (rtn_msg, None)
         weight = 1
-        for i in xrange(3):
+        for i in range(3):
             bw[:] = img_ret[:,:,i][:]
             edges = cv2.Canny(bw, 50, 100)
             d = get_rotation_degree(edges)
@@ -728,7 +732,7 @@ def rotate(img, n_iterations = 2):
         rotation_degree += rotation_degree_tmp
         #print rotation_degree
         img_shape = img.shape
-        M = cv2.getRotationMatrix2D((img_shape[1]/2, img_shape[0]/2), rotation_degree, scale = 1)
+        M = cv2.getRotationMatrix2D((old_div(img_shape[1],2), old_div(img_shape[0],2)), rotation_degree, scale = 1)
         rotation_mtx = M
         img_ret = cv2.warpAffine(img, M, (img_shape[1], img_shape[0]))
 
@@ -791,7 +795,7 @@ def normalize_brightness(img, mask = None, method = 'hist', max_percentile = 100
         hist[0] = 0
         cdf = hist.cumsum()
         cdf_m = np.ma.masked_equal(cdf,0)
-        cdf_m = (cdf_m - cdf_m.min())*255/(cdf_m.max()-cdf_m.min())
+        cdf_m = old_div((cdf_m - cdf_m.min())*255,(cdf_m.max()-cdf_m.min()))
         cdf = np.ma.filled(cdf_m,0).astype('uint8')
         v_ret = cdf[v]
 
@@ -822,12 +826,12 @@ def normalize_color(img, mask_info = None, mask_apply = None, method = 'hist', m
         mask_apply = mask_apply.astype(bool)
     img_ret = img.copy()
     if method == 'hist': # doesn't work well for over-exposed images
-        for i in xrange(3):
+        for i in range(3):
             v = img[:,:,i]
             hist,bins = np.histogram(v[mask_info].flatten(),256,[0,256])
             cdf = hist.cumsum()
             cdf_m = np.ma.masked_equal(cdf,0)
-            cdf_m = (cdf_m - cdf_m.min())*255/(cdf_m.max()-cdf_m.min())
+            cdf_m = old_div((cdf_m - cdf_m.min())*255,(cdf_m.max()-cdf_m.min()))
             cdf = np.ma.filled(cdf_m,0).astype('uint8')
             v[mask_apply] = cdf[v[mask_apply]]
             img_ret[:,:,i] = v
@@ -835,15 +839,15 @@ def normalize_color(img, mask_info = None, mask_apply = None, method = 'hist', m
     elif method == 'grey':
         img = img.astype(float)
         max_rgb = 0
-        for i in xrange(3):
+        for i in range(3):
             v = img[:,:,i]
             #print v[mask_info].mean()
-            v[mask_apply] = v[mask_apply] / v[mask_info].mean()
+            v[mask_apply] = old_div(v[mask_apply], v[mask_info].mean())
             img[:,:,i] = v
             if v[mask_apply].max() > max_rgb:
                 max_rgb = v[mask_apply].max()
 
-        img[mask_apply, :] = img[mask_apply, :] * 255 / max_rgb
+        img[mask_apply, :] = old_div(img[mask_apply, :] * 255, max_rgb)
         img = img.astype(np.uint8)
         img_ret = img
 
@@ -860,14 +864,14 @@ def normalize_color(img, mask_info = None, mask_apply = None, method = 'hist', m
 
         img = img.astype(float)
         max_rgb = 0
-        for i in xrange(3):
+        for i in range(3):
             v = img[:,:,i]
-            v[mask_apply] = v[mask_apply] / v[mask_info].mean()
+            v[mask_apply] = old_div(v[mask_apply], v[mask_info].mean())
             img[:,:,i] = v
             if v[mask_apply].max() > max_rgb:
                 max_rgb = v[mask_apply].max()
 
-        img[mask_apply, :] = img[mask_apply, :] * 255 / max_rgb
+        img[mask_apply, :] = old_div(img[mask_apply, :] * 255, max_rgb)
         img = img.astype(np.uint8)
         img = normalize_brightness(img, mask = mask_apply, max_percentile = 90, method = 'max')
         img[mask_over_exposed, 0] = 255
@@ -878,7 +882,7 @@ def normalize_color(img, mask_info = None, mask_apply = None, method = 'hist', m
     elif method == 'max':
         #b, g, r = cv2.split(img)
         #img = cv2.merge((b, g, r))
-        for i in xrange(3):
+        for i in range(3):
             v = img[:,:,i]
             max_v = np.percentile(v[mask], max_percentile)
             min_v = np.percentile(v[mask], min_percentile)
@@ -929,9 +933,9 @@ def color_dist(img, color_space, hsv = None, BGR_ref = [255, 255, 255], HSV_ref 
         s = hsv[:, :, 1]
         if useV:
             v = hsv[:, :, 2]
-            dist = np.absolute(np.cos((h.astype(np.int) - HSV_ref[0]) / 180 * np.pi)) * s * np.sqrt((255 - np.abs(v - HSV_ref[2])) / 255)
+            dist = np.absolute(np.cos(old_div((h.astype(np.int) - HSV_ref[0]), 180) * np.pi)) * s * np.sqrt(old_div((255 - np.abs(v - HSV_ref[2])), 255))
         else:
-            dist = np.absolute(np.cos((h.astype(np.int) - HSV_ref[0]) / 180 * np.pi)) * s
+            dist = np.absolute(np.cos(old_div((h.astype(np.int) - HSV_ref[0]), 180) * np.pi)) * s
         dist = 255 - dist
         dist = dist.astype(np.uint8)
 
@@ -956,7 +960,7 @@ def detect_color(img_hsv, color, on_surface = False):
     elif color == "white":
         mask = color_inrange(None, 'HSV', hsv = img_hsv, S_U = 60, V_L = 190)
     else:
-        print "ERROR: color detection has specified an undefined color!!!!"
+        print("ERROR: color detection has specified an undefined color!!!!")
 
     return mask
 
@@ -1048,10 +1052,10 @@ def checkBlurByGradient(img, gradientPatchNBox = 5, gradientPatchWidth = 25, gra
     bw = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
     n_rows, n_cols = img.shape[:2]
     max_gradients = 0
-    for i in xrange(gradientPatchNBox):
-        for j in xrange(gradientPatchNBox):
-            top = (n_rows / ( 2 * gradientPatchNBox + 1)) * (2 * i + 1);
-            left = (n_cols / ( 2 * gradientPatchNBox + 1)) * (2 * j + 1);
+    for i in range(gradientPatchNBox):
+        for j in range(gradientPatchNBox):
+            top = (old_div(n_rows, ( 2 * gradientPatchNBox + 1))) * (2 * i + 1);
+            left = (old_div(n_cols, ( 2 * gradientPatchNBox + 1))) * (2 * j + 1);
             bw_window = bw[top : top + gradientPatchHeight, left : left + gradientPatchWidth]
             gradients = np.absolute(cv2.Sobel(bw_window, cv2.CV_64F, 1, 1, ksize = 5))
             sum_gradients = np.sum(gradients)
@@ -1107,7 +1111,7 @@ def non_max_suppression_fast(boxes, overlapThresh):
         # compute the ratio of overlap
         w = np.maximum(0, xx2 - xx1 + 1)
         h = np.maximum(0, yy2 - yy1 + 1)
-        overlap = (w * h) / area[idxs[:last]]
+        overlap = old_div((w * h), area[idxs[:last]])
 
         # delete all indexes from the index list that overlap too much
         idxs = np.delete(idxs, np.concatenate(([last],
@@ -1125,7 +1129,7 @@ def object_detection(cv_img, labels, window_method = "region", recognition_metho
     ## selective search to find candidate bounding boxes
     sk_img = cv_img2sk_img(cv_img)
     rects = [] # locations of the candidates
-    dlib.find_candidate_object_locations(sk_img, rects, min_size = cv_img.shape[0] * cv_img.shape[1] / 100)
+    dlib.find_candidate_object_locations(sk_img, rects, min_size = old_div(cv_img.shape[0] * cv_img.shape[1], 100))
 
     ## count how many rects are promissing
     rect_candidates = []
@@ -1137,7 +1141,7 @@ def object_detection(cv_img, labels, window_method = "region", recognition_metho
             rect_candidates.append([x1, y1, x2, y2])
             if len(rect_candidates) > 50:
                 break
-    print "# of candidate rectangles: %d" % len(rect_candidates)
+    print("# of candidate rectangles: %d" % len(rect_candidates))
 
     ## if nothing interesting in the image
     if not rect_candidates:

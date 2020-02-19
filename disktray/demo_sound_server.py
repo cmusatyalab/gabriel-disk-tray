@@ -19,6 +19,8 @@ and play it out. This is sound server is used in demos to let audience hear what
 user.
 This server requires "espeak" program to be installed.
 """
+from __future__ import print_function
+from builtins import str
 import os
 import socket
 import struct
